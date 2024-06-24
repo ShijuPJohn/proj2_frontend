@@ -1,43 +1,42 @@
-<script>
-import {ref} from 'vue';
-import axios from 'axios';
+<script setup>
+import {ref, watch} from 'vue'
+import {useAuthStore} from "@/stores/authStore.js";
+import router from "@/router/index.js";
+import {storeToRefs} from "pinia";
 
-export default {
-  setup() {
-    const username = ref('');
-    const email = ref('');
-    const password = ref('');
-    const snackbar = ref(false);
-    const snackbarMessage = ref('');
-    const snackbarColor = ref('success');
+const authStore = useAuthStore()
+const {signup} = authStore
+const {loading, error, isLoggedIn} = storeToRefs(authStore)
+const username = ref('')
+const email = ref('')
+const password = ref('')
+const snackbar = ref(false)
+const snackbarMessage = ref('')
+const snackbarColor = ref('success')
 
-    const onSubmit = function () {
-      axios.post('http://localhost:5000/api/user', {
-        username: username.value,
-        email: email.value,
-        password: password.value
-      }, {
-        headers: {'Content-Type': 'application/json'}
-      }).then(res => {
-        console.log(res);
-        snackbarMessage.value = 'Signup successful!';
-        snackbarColor.value = 'success';
-        snackbar.value = true; // Show snackbar
-
-      }).catch(error => {
-        console.error(error);
-        snackbarMessage.value = 'Signup failed. Please try again.';
-        snackbarColor.value = 'error';
-        snackbar.value = true; // Show snackbar
-      });
-    };
-
-    return {
-      username, email, password, onSubmit,
-      snackbar, snackbarMessage, snackbarColor
-    };
-  }
+const onSubmit = async () => {
+  await signup(username.value, email.value, password.value)
 }
+watch(error, (newError) => {
+  console.log("error status changed")
+  if (error.value) {
+    snackbarMessage.value = "Login failed. Please try again.";
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  }
+});
+
+watch(isLoggedIn, (newVal) => {
+  if (isLoggedIn.value) {
+    snackbarMessage.value = "Login success. Redirecting"
+    snackbarColor.value = 'success'
+    snackbar.value = true
+    setTimeout(() => {
+      router.push("/dashboard")
+    }, 1000)
+  }
+})
+
 </script>
 
 <template>
@@ -63,10 +62,11 @@ export default {
 
 
 <style scoped>
-.custom-snackbar{
+.custom-snackbar {
   display: flex;
   justify-content: flex-start;
 }
+
 .root-container {
   margin-top: 5rem;
   width: 28rem;

@@ -16,20 +16,6 @@ const snackbarColor = ref('success');
 
 const onsubmit = async function () {
   await login(email.value, password.value)
-  // if (!error.value) {
-  //   snackbarMessage.value = 'Sign In successful!';
-  //   snackbarColor.value = 'success';
-  //   snackbar.value = true; // Show snackbar
-  //   console.log("login success")
-  //
-  //
-  // } else {
-  //   snackbarMessage.value = 'Sign In failed. Please try again.';
-  //   snackbarColor.value = 'error';
-  //   snackbar.value = true;
-  //   console.log("login failed")
-  // }
-
 
 }
 watch(error, (newError) => {
@@ -38,14 +24,14 @@ watch(error, (newError) => {
     snackbarMessage.value = "Login failed. Please try again.";
     snackbarColor.value = 'error'
     snackbar.value = true
-  } else {
+  }
+});
+
+watch(isLoggedIn, (newVal) => {
+  if (isLoggedIn.value) {
     snackbarMessage.value = "Login success. Redirecting"
     snackbarColor.value = 'success'
     snackbar.value = true
-  }
-});
-watch(isLoggedIn, (newVal) => {
-  if (isLoggedIn.value) {
     setTimeout(() => {
       router.push("/dashboard")
     }, 1000)

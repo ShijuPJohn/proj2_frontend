@@ -21,7 +21,26 @@ export const useAuthStore = defineStore('auth', () => {
             user.value = response.data.user
             isLoggedIn.value = true
         } catch (err) {
-            console.log("errrrrrrrr")
+            error.value = err.response?.data?.message || err.message
+            isLoggedIn.value = false
+        } finally {
+            loading.value = false
+        }
+    }
+    async function signup(username, email, password) {
+        loading.value = true
+        error.value = null
+        try {
+            const response = await axios.post('http://localhost:5000/api/user', JSON.stringify({
+                username,
+                email,
+                password,
+            }), {
+                headers: {'Content-Type': 'application/json'}
+            })
+            user.value = response.data.user
+            isLoggedIn.value = true
+        } catch (err) {
             error.value = err.response?.data?.message || err.message
             isLoggedIn.value = false
         } finally {
@@ -34,22 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoggedIn.value = false
     }
 
-    return { user, isLoggedIn, loading, error, login, logout }
+    return { user, isLoggedIn, loading, error, login, logout , signup}
 }, {
     persist: true
 })
-
-
-// axios.post('http://localhost:5000/api/user/login', JSON.stringify({
-//     email: email.value,
-//     password: password.value
-// }), {
-//     headers: {'Content-Type': 'application/json'}
-// }).then(res => {
-//     console.log(res);
-//
-//
-// }).catch(error => {
-//     console.error(error);
-//     // Show snackbar
-// });
