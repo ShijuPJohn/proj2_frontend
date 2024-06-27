@@ -9,13 +9,13 @@ const {logout} = authStore;
 const {loading, error, isLoggedIn} = storeToRefs(authStore)
 onMounted(()=>{
   if (!authStore.$state){
-    router.push('/login')
+    router.push('/')
   }
 })
 watch(isLoggedIn, (newVal) => {
   console.log("isLoggedIn", newVal)
   if (!isLoggedIn.value || !isLoggedIn) {
-    router.push('/login')
+    router.push('/')
   }
 })
 watch(
