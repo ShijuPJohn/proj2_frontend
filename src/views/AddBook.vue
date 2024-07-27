@@ -12,7 +12,7 @@ const localStateLoading = ref(true);
 const selectedAuthors = ref([]);
 const selectedSections = ref([]);
 const authStore = useAuthStore();
-const {loading, error, isLoggedIn, token} = storeToRefs(authStore);
+const {loading,role, error, isLoggedIn, token} = storeToRefs(authStore);
 const sections = ref([]);
 const authors = ref([]);
 const headers = {
@@ -21,8 +21,8 @@ const headers = {
 };
 
 onMounted(async () => {
-  if (!authStore.$state) {
-    router.push('/')
+  if (!authStore.$state || role!=="librarian") {
+    router.push('/unauthorized')
   }
   const sectonsRes = await axios.get('http://localhost:5000/api/sections', {headers});
   sections.value = sectonsRes.data.sections;

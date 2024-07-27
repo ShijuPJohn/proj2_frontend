@@ -6,7 +6,7 @@ import router from "@/router/index.js";
 
 const authStore = useAuthStore()
 const {login} = authStore
-const {loading,role, error, isLoggedIn} = storeToRefs(authStore)
+const {loading, role, error, isLoggedIn} = storeToRefs(authStore)
 const email = ref('');
 const password = ref('');
 const snackbar = ref(false);
@@ -30,17 +30,15 @@ watch(isLoggedIn, (newVal) => {
     snackbarColor.value = 'success'
     snackbar.value = true
     setTimeout(() => {
-      if (role.value==="user"){
-        router.push("/user-dashboard")
-      } else{
-        router.push("/librarian-dashboard")
-      }
+      router.push("/dashboard")
     }, 1000)
   }
 })
+
 async function submit() {
   await login(email.value, password.value)
 }
+
 const rules = reactive({
   required: value => !!value || 'Required.',
 });

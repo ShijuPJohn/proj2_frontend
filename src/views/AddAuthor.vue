@@ -10,12 +10,13 @@ const snackbarMessage = ref('');
 const snackbarColor = ref('success');
 
 const authStore = useAuthStore();
-const {loading, error, isLoggedIn, token} = storeToRefs(authStore)
+const {loading, role, error, isLoggedIn, token} = storeToRefs(authStore)
 const authorName = ref('');
 
 onMounted(() => {
-  if (!authStore.$state) {
-    router.push('/')
+  console.log(role.value)
+  if (!authStore.$state || role.value !== 'librarian') {
+    router.push('/unauthorized')
   }
 })
 watch(isLoggedIn, (newVal) => {
@@ -28,7 +29,7 @@ watch(isLoggedIn, (newVal) => {
 //   'Content-Type': 'application/json',
 //   'Authorization': 'Bearer'+
 // };
-async function onSubmit(){
+async function onSubmit() {
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token.value}`
@@ -36,8 +37,8 @@ async function onSubmit(){
   const data = {
     name: authorName.value,
   };
-  try{
-    const response = await axios.post('http://localhost:5000/api/authors', data, { headers })
+  try {
+    const response = await axios.post('http://localhost:5000/api/authors', data, {headers})
     if (response.status === 201) {
       snackbarMessage.value = "Author added"
       snackbarColor.value = 'success'
@@ -57,7 +58,8 @@ async function onSubmit(){
 
 <template>
   <div class="mt-20 w-72 min-h-55vh bg-white rounded-xl flex flex-col items-center justify-center p-4 shadow-custom1">
-    <div class="text-2xl font-medium text-gray-600 px-1 border-b-[3px] border-secondary-light mt-4">Add a new Author</div>
+    <div class="text-2xl font-medium text-gray-600 px-1 border-b-[3px] border-secondary-light mt-4">Add a new Author
+    </div>
     <form class="flex flex-col items-center w-full my-6" method="post" action="/login" @submit.prevent="onSubmit">
       <input type="text"
              class="w-full min-h-16 my-4 px-4 py-2 text-lg rounded-md border border-solid border-pink-300 focus:border-primary focus:outline-none"

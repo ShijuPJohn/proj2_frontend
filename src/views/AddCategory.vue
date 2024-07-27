@@ -11,13 +11,14 @@ const snackbarMessage = ref('');
 const snackbarColor = ref('success');
 
 const authStore = useAuthStore();
-const {loading, error, isLoggedIn, token} = storeToRefs(authStore)
+const {loading, role, error, isLoggedIn, token} = storeToRefs(authStore)
 const categoryName = ref('');
 const categoryDesc = ref('');
 
+
 onMounted(() => {
-  if (!authStore.$state) {
-    router.push('/')
+  if (!authStore.$state || role.value !== 'librarian') {
+    router.push('/unauthorized')
   }
 })
 watch(isLoggedIn, (newVal) => {

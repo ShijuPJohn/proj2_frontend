@@ -6,7 +6,7 @@ import router from "@/router/index.js";
 
 const authStore = useAuthStore();
 const {logout} = authStore;
-const {loading, error, isLoggedIn} = storeToRefs(authStore)
+const {loading, error, role, isLoggedIn} = storeToRefs(authStore)
 onMounted(() => {
   if (!authStore.$state) {
     router.push('/')
@@ -33,10 +33,14 @@ watch(
 <template>
   <h1>User's Dashboard</h1>
   <main>
-    <div class="actions-box">
+    <div v-if="role==='librarian'" class="actions-box">
       <router-link to="/add-category" class="create-category-btn action-btn">Create a new category</router-link>
       <router-link to="/add-author" class="create-category-btn action-btn">Create a new author</router-link>
       <router-link to="/add-book" class="create-book action-btn">Create a new book</router-link>
+    </div>
+    <div v-if="role==='user'" class="actions-box">
+      <h1>User's Dashboard</h1>
+
     </div>
 
   </main>
@@ -44,11 +48,12 @@ watch(
 </template>
 
 <style scoped>
-.actions-box{
+.actions-box {
   display: flex;
   flex-direction: column;
 }
-.actions-box .action-btn{
+
+.actions-box .action-btn {
   color: var(--grey-color-dark1);
   text-decoration: none;
   border-style: solid;

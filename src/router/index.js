@@ -30,14 +30,9 @@ const router = createRouter({
       component: () => import('../views/ContactView.vue')
     },
     {
-      path: '/librarian-dashboard',
-      name: 'librarian_dashboard',
-      component: () => import('../views/LibrarianDashboardView.vue')
-    },
-    {
-      path: '/user-dashboard',
-      name: 'user_dashboard',
-      component: () => import('../views/UserDashboardView.vue')
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/DashboardView.vue')
     },
     {
       path: '/add-book',
@@ -53,6 +48,11 @@ const router = createRouter({
       path: '/add-author',
       name: 'add_author',
       component: () => import('../views/AddAuthor.vue')
+    },
+    {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: () => import('../views/UnauthorizedView.vue')
     },
 
   ]

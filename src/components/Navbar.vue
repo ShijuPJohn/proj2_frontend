@@ -5,7 +5,7 @@ import { onMounted } from 'vue';
 
 const authStore = useAuthStore();
 const { logout } = authStore;
-const { loading, error, isLoggedIn, token } = storeToRefs(authStore);
+const { loading,role, error, isLoggedIn, token } = storeToRefs(authStore);
 </script>
 
 <template>

@@ -64,6 +64,6 @@ export const useAuthStore = defineStore('auth', () => {
     return {isLoggedIn, loading, token, error, role, login, logout, signup}
 }, {
     persist: {
-        paths: ['isLoggedIn', 'loading', 'error', 'token']
+        paths: ['isLoggedIn', 'loading', 'error', 'token', "role"]
     }
 });
