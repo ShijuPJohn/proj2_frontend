@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch} from 'vue'
+import {reactive, ref, watch} from 'vue'
 import {useAuthStore} from "@/stores/authStore.js";
 import router from "@/router/index.js";
 import {storeToRefs} from "pinia";
@@ -14,9 +14,6 @@ const snackbar = ref(false)
 const snackbarMessage = ref('')
 const snackbarColor = ref('success')
 
-const onSubmit = async () => {
-  await signup(username.value, email.value, password.value)
-}
 watch(error, (newError) => {
   console.log("error status changed")
   if (error.value) {
@@ -36,21 +33,83 @@ watch(isLoggedIn, (newVal) => {
     }, 1000)
   }
 })
+async function submit() {
+  await signup(username.value, email.value, password.value)
+}
+const rules = reactive({
+  required: value => !!value || 'Required.',
+
+  min: v => v.length >= 6 || 'Password must be at least 6 characters',
+  uppercase: v => /[A-Z]/.test(v) || 'Password must contain an uppercase letter',
+  lowercase: v => /[a-z]/.test(v) || 'Password must contain a lowercase letter',
+  special: v => /[!@#$%^&*(),.?":{}|<>]/.test(v) || 'Password must contain a special character',
+  emailMatch: () => 'The email and password you entered don\'t match'
+});
+const nameRules = [
+  rules.required,
+  v => v.length >= 3 || 'Name must be at least 3 characters',
+];
+const emailRules = [
+  rules.required,
+  v => /.+@.+\..+/.test(v) || 'Email must be valid',
+];
+
+const passwordRules = [
+  rules.required,
+  rules.min,
+  rules.uppercase,
+  rules.lowercase,
+  rules.special,
+];
+
 
 </script>
 
 <template>
-  <div class="root-container">
-    <div class="title-text-box">Sign Up</div>
-    <form class="form" method="post" action="/login" @submit.prevent="onSubmit">
-      <input type="text" class="input-text" placeholder="Full Name" v-model="username">
-      <input type="text" class="input-text" placeholder="Email" v-model="email">
-      <input type="password" class="input-text" placeholder="Password" v-model="password">
-      <input type="submit" class="btn submit" value="Submit">
-    </form>
-    <div class="or-box"></div>
-    <div class="create-account-box">
-      <a href="/login">Sign in with an account</a>
+  <div class="flex w-[50%] mt-8 border rounded-[5px] card-root ">
+    <div class="card-action-area">
+      <div class="title-text-box">Sign Up</div>
+      <v-container>
+        <v-form ref="form" v-model="valid">
+          <v-text-field
+              class="input-text"
+              v-model="username"
+              variant="outlined"
+              :rules="nameRules"
+              label="Full Name"
+              floating-label
+              required
+          ></v-text-field>
+          <v-text-field
+              class="input-text"
+              v-model="email"
+              variant="outlined"
+              :rules="emailRules"
+              label="Email"
+              floating-label
+              required
+          ></v-text-field>
+          <v-text-field
+              class="input-text"
+              v-model="password"
+              :rules="passwordRules"
+              :type="showPassword ? 'text' : 'password'"
+              :append-inner-icon-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              variant="outlined"
+              label="Password"
+              floating-label
+              required
+          ></v-text-field>
+          <v-btn @click="submit" class="form-btn">Submit</v-btn>
+        </v-form>
+      </v-container>
+      <div class="or-box"></div>
+      <div class="create-account-box">
+        <router-link to="/login">Sign in with an account</router-link>
+      </div>
+    </div>
+    <div class="overflow-hidden items-center justify-center w-50 bg-white p-4 hidden md:flex">
+      <img src="../assets/images/library.png" alt="library photo" class="h-[100%] object-contain filter sepia-[30%] hover:sepia-[50%] transition-all duration-100">
     </div>
   </div>
 
@@ -66,14 +125,14 @@ watch(isLoggedIn, (newVal) => {
   display: flex;
   justify-content: flex-start;
 }
-
-.root-container {
-  margin-top: 5rem;
-  width: 28rem;
-  min-height: 55vh;
-  background-color: white;
-  border-radius: 12px;
+.card-root{
   box-shadow: 10px 10px 30px rgba(0, 0, 0, .5);
+}
+
+
+.card-action-area {
+  width: 28rem;
+  background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,7 +147,7 @@ watch(isLoggedIn, (newVal) => {
   padding: 0 .3rem;
   border-bottom: solid;
   border-color: var(--secondary-color-light);
-  margin-top: 1rem;
+  margin-top: .5rem;
 }
 
 .form {
@@ -103,14 +162,8 @@ watch(isLoggedIn, (newVal) => {
 .input-text {
   width: 100%;
   min-height: 4rem;
-  margin: 1rem .5rem;
-  padding: 1rem;
+  padding: 0;
   font-size: 1.1rem;
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: #a97d96;
-  border-style: solid;
-  outline: none;
 }
 
 .input-text:focus {
@@ -118,15 +171,10 @@ watch(isLoggedIn, (newVal) => {
   outline: none;
 }
 
-.form .btn,
-.form .btn:hover {
+.form-btn {
   height: 4rem;
   width: 100%;
   text-transform: uppercase;
-  //border-radius: 5px;
-  //border-width: 1px;
-  ////border-color: var(--primary-color);
-  //border-style: solid;
   background: var(--primary-color-light);
   outline: none;
   border: none;
@@ -142,7 +190,7 @@ watch(isLoggedIn, (newVal) => {
   width: 70%;
   height: .1rem;
   background-color: var(--secondary-color-light);
-  margin: 2rem 0 1rem 0;
+  margin: 1rem 0 1rem 0;
 }
 
 .create-account-box {

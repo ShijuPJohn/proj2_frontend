@@ -30,9 +30,29 @@ const router = createRouter({
       component: () => import('../views/ContactView.vue')
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/DashboardView.vue')
+      path: '/librarian-dashboard',
+      name: 'librarian_dashboard',
+      component: () => import('../views/LibrarianDashboardView.vue')
+    },
+    {
+      path: '/user-dashboard',
+      name: 'user_dashboard',
+      component: () => import('../views/UserDashboardView.vue')
+    },
+    {
+      path: '/add-book',
+      name: 'add_book',
+      component: () => import('../views/AddBook.vue')
+    },
+    {
+      path: '/add-category',
+      name: 'add_category',
+      component: () => import('../views/AddCategory.vue')
+    },
+    {
+      path: '/add-author',
+      name: 'add_author',
+      component: () => import('../views/AddAuthor.vue')
     },
 
   ]

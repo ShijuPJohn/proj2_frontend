@@ -25,9 +25,15 @@
   --primary-color: #f3285a;
   --primary-color-light: #02d8f1;
   --secondary-color-light: #e885c0;
+  --grey-color-light0: #dbdbdb;
   --grey-color-light1: #fcfcfc;
-  --grey-color-light2: #efefef;
+  --grey-color-light2: #c8c8c8;
+  --grey-color-light3: #adacac;
+  --grey-color-light4: #898989;
+  --grey-color-dark0: #272727;
   --grey-color-dark1: #3d3d3d;
+  --grey-color-dark2: #626262;
+  --grey-color-border1: #707070;
 }
 /* semantic color variables for this project */
 :root {
@@ -68,34 +74,14 @@
 }
 
 body {
-  min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
+  font-family:Inter, sans-serif;
   font-size: 16px;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-
-  text-rendering: optimizeLegibility;
   font-weight: 400;
+  min-height: 100vh;
+  width: 100vw;
+  text-rendering: optimizeLegibility;
   background: linear-gradient(to right bottom, var(--primary-color-light), var(--secondary-color-light));
   position: relative;
   -webkit-font-smoothing: antialiased;

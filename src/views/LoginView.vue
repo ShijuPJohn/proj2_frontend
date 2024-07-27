@@ -1,23 +1,20 @@
 <script setup>
-import {ref, watch} from 'vue';
+import {reactive, ref, watch} from 'vue';
 import {useAuthStore} from '../stores/authStore.js'
 import {storeToRefs} from "pinia";
 import router from "@/router/index.js";
 
 const authStore = useAuthStore()
 const {login} = authStore
-const {loading, error, isLoggedIn} = storeToRefs(authStore)
+const {loading,role, error, isLoggedIn} = storeToRefs(authStore)
 const email = ref('');
 const password = ref('');
 const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success');
+const valid = ref(false);
+const showPassword = ref(false);
 
-
-const onsubmit = async function () {
-  await login(email.value, password.value)
-
-}
 watch(error, (newError) => {
   console.log("error status changed")
   if (error.value) {
@@ -33,25 +30,75 @@ watch(isLoggedIn, (newVal) => {
     snackbarColor.value = 'success'
     snackbar.value = true
     setTimeout(() => {
-      router.push("/dashboard")
+      if (role.value==="user"){
+        router.push("/user-dashboard")
+      } else{
+        router.push("/librarian-dashboard")
+      }
     }, 1000)
   }
 })
+async function submit() {
+  await login(email.value, password.value)
+}
+const rules = reactive({
+  required: value => !!value || 'Required.',
+});
+
+const emailRules = [
+  rules.required,
+  v => /.+@.+\..+/.test(v) || 'Email must be valid',
+];
+
+const passwordRules = [
+  rules.required,
+];
+
 
 </script>
 
 <template>
-  <div class="root-container">
-    <div class="title-text-box">Login</div>
-    <form class="form" method="post" action="/login" @submit.prevent="onsubmit">
-      <input type="text" class="input-text" placeholder="Email" v-model="email">
-      <input type="text" class="input-text" placeholder="Password" v-model="password">
-      <input type="submit" class="btn submit" @submit="onsubmit">
-    </form>
-    <div class="or-box">
+  <div class="flex w-[50%] mt-8 card-root">
+    <div class="card-action-area">
+      <div class="title-text-box">Login</div>
+
+
+      <v-container>
+        <v-form ref="form" v-model="valid">
+          <v-text-field
+              class="input-text"
+              v-model="email"
+              variant="outlined"
+              :rules="emailRules"
+              label="Email"
+              floating-label
+              required
+          ></v-text-field>
+          <v-text-field
+              class="input-text"
+              v-model="password"
+              :rules="passwordRules"
+              :type="showPassword ? 'text' : 'password'"
+              :append-inner-icon-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              variant="outlined"
+              label="Password"
+              floating-label
+              required
+          ></v-text-field>
+          <v-btn @click="submit" class="form-btn">Submit</v-btn>
+        </v-form>
+      </v-container>
+
+      <div class="or-box">
+      </div>
+      <div class="create-account-box">
+        <router-link to="/signup">Create an account</router-link>
+      </div>
     </div>
-    <div class="create-account-box">
-      <a href="/signup">Create an account</a>
+
+    <div class="overflow-hidden flex items-center justify-center w-50 bg-white p-4">
+      <img src="../assets/images/library.png" alt="library photo"
+           class="h-[100%] object-contain filter sepia-[30%] hover:sepia-[50%] transition-all duration-100">
     </div>
   </div>
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
@@ -74,13 +121,13 @@ watch(isLoggedIn, (newVal) => {
   border: 1px solid white;
 }
 
-.root-container {
-  margin-top: 5rem;
-  width: 28rem;
-  min-height: 55vh;
-  background-color: white;
-  border-radius: 12px;
+.card-root {
   box-shadow: 10px 10px 30px rgba(0, 0, 0, .5);
+}
+
+.card-action-area {
+  width: 28rem;
+  background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,14 +157,8 @@ watch(isLoggedIn, (newVal) => {
 .input-text {
   width: 100%;
   min-height: 4rem;
-  margin: 1rem .5rem;
-  padding: 1rem;
+  padding: 0;
   font-size: 1.1rem;
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: #a97d96;
-  border-style: solid;
-  outline: none;
 }
 
 .input-text:focus {
@@ -125,15 +166,10 @@ watch(isLoggedIn, (newVal) => {
   outline: none;
 }
 
-.form .btn,
-.form .btn:hover {
+.form-btn {
   height: 4rem;
   width: 100%;
   text-transform: uppercase;
-  //border-radius: 5px;
-  //border-width: 1px;
-  ////border-color: var(--primary-color);
-  //border-style: solid;
   background: var(--primary-color-light);
   outline: none;
   border: none;
@@ -163,10 +199,5 @@ watch(isLoggedIn, (newVal) => {
   text-decoration: none;
   color: deeppink;
   padding: .3rem .7rem;
-}
-
-.use-same-image-box {
-  font-size: 1.4rem;
-  margin-bottom: 2rem;
 }
 </style>
