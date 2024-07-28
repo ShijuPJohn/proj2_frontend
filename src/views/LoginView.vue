@@ -3,6 +3,7 @@ import {reactive, ref, watch} from 'vue';
 import {useAuthStore} from '../stores/authStore.js'
 import {storeToRefs} from "pinia";
 import router from "@/router/index.js";
+import {mdi} from "vuetify/iconsets/mdi-svg";
 
 const authStore = useAuthStore()
 const {login} = authStore
@@ -52,6 +53,10 @@ const passwordRules = [
   rules.required,
 ];
 
+function toggleShowPassword() {
+  showPassword.value = !showPassword.value;
+}
+
 
 </script>
 
@@ -77,7 +82,8 @@ const passwordRules = [
               v-model="password"
               :rules="passwordRules"
               :type="showPassword ? 'text' : 'password'"
-              :append-inner-icon-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append-inner="toggleShowPassword"
               variant="outlined"
               label="Password"
               floating-label
@@ -102,6 +108,7 @@ const passwordRules = [
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
     <button @click="snackbar = false" class="snackbar-close-btn">X</button>
+
   </v-snackbar>
 </template>
 
@@ -199,3 +206,6 @@ const passwordRules = [
   padding: .3rem .7rem;
 }
 </style>
+
+
+

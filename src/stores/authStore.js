@@ -20,7 +20,6 @@ export const useAuthStore = defineStore('auth', () => {
             }), {
                 headers: {'Content-Type': 'application/json'}
             })
-            console.log("response", response)
             isLoggedIn.value = true
             token.value = response.data.token
             const decoded = jwtDecode(response.data.token);
@@ -30,7 +29,6 @@ export const useAuthStore = defineStore('auth', () => {
             isLoggedIn.value = false
         } finally {
             loading.value = false
-            console.log("token from finally block", token.value)
         }
     }
 
@@ -48,7 +46,6 @@ export const useAuthStore = defineStore('auth', () => {
             isLoggedIn.value = true
             token.value = response.data.token
             const decoded = jwtDecode(response.data.token);
-            console.log("decoded jwt token", decoded)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
             isLoggedIn.value = false

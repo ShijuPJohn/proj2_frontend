@@ -13,6 +13,7 @@ const password = ref('')
 const snackbar = ref(false)
 const snackbarMessage = ref('')
 const snackbarColor = ref('success')
+const showPassword = ref(false)
 
 watch(error, (newError) => {
   console.log("error status changed")
@@ -61,7 +62,9 @@ const passwordRules = [
   rules.lowercase,
   rules.special,
 ];
-
+function toggleShowPassword() {
+  showPassword.value = !showPassword.value;
+}
 
 </script>
 
@@ -94,7 +97,8 @@ const passwordRules = [
               v-model="password"
               :rules="passwordRules"
               :type="showPassword ? 'text' : 'password'"
-              :append-inner-icon-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append-inner="toggleShowPassword"
               variant="outlined"
               label="Password"
               floating-label

@@ -25,10 +25,6 @@ watch(isLoggedIn, (newVal) => {
     router.push('/')
   }
 })
-// const headers = {
-//   'Content-Type': 'application/json',
-//   'Authorization': 'Bearer'+
-// };
 async function onSubmit() {
   const headers = {
     'Content-Type': 'application/json',
