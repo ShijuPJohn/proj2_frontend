@@ -56,6 +56,8 @@ export const useAuthStore = defineStore('auth', () => {
 
     function logout() {
         isLoggedIn.value = false
+        token.value = ''
+        role.value = ''
     }
 
     return {isLoggedIn, loading, token, error, role, login, logout, signup}

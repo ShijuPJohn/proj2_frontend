@@ -16,7 +16,7 @@ const {loading, role, error, isLoggedIn, token} = storeToRefs(authStore);
 const sections = ref([]);
 const authors = ref([]);
 const coverImageFile = ref(null);
-const coverImageUrl = ref(false);
+const coverImageUrl = ref('');
 const isPDF = ref(false);
 const pdfFile = ref(null);
 const pdfFilePath = ref('');
@@ -62,7 +62,7 @@ async function handleCoverImageUpload(event) {
         'Authorization': `Bearer ${token.value}`
       }
     });
-    coverImageUrl.value = response.data.filename;
+    coverImageUrl.value = `http://localhost:5000/static/uploads/${response.data.filename}`;
     snackbarMessage.value = "Cover Image uploaded successfully";
     snackbarColor.value = 'success';
     snackbar.value = true;
@@ -96,16 +96,16 @@ async function handlePDFUpload(event) {
     snackbar.value = true;
   }
 }
-
 async function onSubmit() {
   const data = {
     title: title.value,
-    year: year.value,
+    publication_year: year.value,
     description: description.value,
-    sections: selectedSections.value,
-    authors: selectedAuthors.value,
-    pdfPath: pdfFilePath.value,
+    sections: sections.value.filter(section=>selectedSections.value.includes(section.name)).map(section=>section.id),
+    authors: authors.value.filter(author=>selectedAuthors.value.includes(author.name)).map(author=>author.id),
+    filename: pdfFilePath.value,
     content: isPDF.value ? '' : content.value,
+    cover_image: coverImageUrl.value,
   };
   try {
     const response = await axios.post('http://localhost:5000/api/books', data, {headers});
@@ -123,12 +123,10 @@ async function onSubmit() {
     snackbarColor.value = 'error';
     snackbar.value = true;
   }
-
-
 }
 
 watch(coverImageUrl, (newVal) => {
-  console.log("cover image newval",newVal)
+  console.log("cover image newval", newVal)
 })
 
 const submit = () => {
@@ -188,6 +186,7 @@ const form = ref(null);
             v-model="selectedAuthors"
             :items="authors.map(author => author.name)"
         ></v-autocomplete>
+        <h3 class="text-slate-500">Upload a cover Image</h3>
         <div class="flex items-center justify-between gap-4 border-slate-200  border-2 my-4 py-2">
           <v-file-input
               accept="image/*"
@@ -197,10 +196,10 @@ const form = ref(null);
               @change="handleCoverImageUpload"
           ></v-file-input>
           <div class="mx-2 h-32 w-32 border-slate-200 border-2">
-            <img :src="`http://localhost:5000/static/uploads/${coverImageUrl}`"
+            <img :src="coverImageUrl"
                  alt="Cover Image"
                  class="h-full w-full"
-                 v-if="coverImageUrl" >
+                 v-if="coverImageUrl">
           </div>
 
         </div>
@@ -213,24 +212,26 @@ const form = ref(null);
             hide-details
         ></v-switch>
         <p class="text-xl">{{ isPDF ? "Upload PDF file" : "Add the content here" }}</p>
-        <v-file-input
-            v-if="isPDF"
-            accept="application/pdf"
-            label="PDF File"
-            class="min-h-[4rem]"
-            v-model="pdfFile"
-            @change="handlePDFUpload"
-        ></v-file-input>
+        <div class="min-h-[12rem] w-full px-2 flex justify-center ">
+          <v-file-input
+              v-if="isPDF"
+              accept="application/pdf"
+              label="PDF File"
+              class="min-h-[4rem]"
+              v-model="pdfFile"
+              @change="handlePDFUpload"
+          ></v-file-input>
 
-        <v-textarea
-            v-if="!isPDF"
-            v-model="content"
-            variant="outlined"
-            label="Content"
-            floating-label
+          <v-textarea
+              v-if="!isPDF"
+              v-model="content"
+              variant="outlined"
+              label="Content"
+              floating-label
 
-            required
-        ></v-textarea>
+              required
+          ></v-textarea>
+        </div>
 
         <v-btn @click="submit" height="48" variant="tonal" class="form-btn">Submit</v-btn>
       </v-form>
