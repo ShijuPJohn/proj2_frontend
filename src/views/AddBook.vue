@@ -139,35 +139,13 @@ const form = ref(null);
 </script>
 
 <template>
-  <div class=" w-full md:w-[70%] min-h-[55vh] bg-white shadow-custom1 flex flex-col items-center justify-center p-4">
-    <div class="text-2xl font-medium text-gray-600 border-b-[3px] border-secondary-color-light mt-4 mb-6">
-      Add a new book
-    </div>
+  <div class="add-book-container">
+    <div class="title">Add a new book</div>
     <v-container>
-      <v-form ref="form" v-model="valid" class="flex flex-col justify-center items-stretch">
-        <v-text-field
-            v-model="title"
-            variant="outlined"
-            label="Title"
-            floating-label
-            required
-        ></v-text-field>
-        <v-text-field
-            v-model="year"
-            variant="outlined"
-            label="Year"
-            floating-label
-            required
-        ></v-text-field>
-        <v-textarea
-            v-model="description"
-            variant="outlined"
-            label="Description"
-            floating-label
-
-            required
-        ></v-textarea>
-
+      <v-form ref="form" v-model="valid" class="form">
+        <v-text-field v-model="title" variant="outlined" label="Title" floating-label required></v-text-field>
+        <v-text-field v-model="year" variant="outlined" label="Year" floating-label required></v-text-field>
+        <v-textarea v-model="description" variant="outlined" label="Description" floating-label required></v-textarea>
         <v-autocomplete
             label="Sections"
             variant="outlined"
@@ -186,64 +164,127 @@ const form = ref(null);
             v-model="selectedAuthors"
             :items="authors.map(author => author.name)"
         ></v-autocomplete>
-        <h3 class="text-slate-500">Upload a cover Image</h3>
-        <div class="flex items-center justify-between gap-4 border-slate-200  border-2 my-4 py-2">
+        <h3 class="upload-title">Upload a cover Image</h3>
+        <div class="upload-container">
           <v-file-input
               accept="image/*"
               label="Cover Image"
-              class="max-w-xl"
+              class="file-input"
               v-model="coverImageFile"
               @change="handleCoverImageUpload"
           ></v-file-input>
-          <div class="mx-2 h-32 w-32 border-slate-200 border-2">
-            <img :src="coverImageUrl"
-                 alt="Cover Image"
-                 class="h-full w-full"
-                 v-if="coverImageUrl">
+          <div class="cover-image">
+            <img :src="coverImageUrl" alt="Cover Image" class="image" v-if="coverImageUrl">
           </div>
-
         </div>
-
-        <v-switch
-            v-model="isPDF"
-            color="red"
-            label="Edit Content or upload PDF?"
-            value="red"
-            hide-details
-        ></v-switch>
-        <p class="text-xl">{{ isPDF ? "Upload PDF file" : "Add the content here" }}</p>
-        <div class="min-h-[12rem] w-full px-2 flex justify-center ">
+        <v-switch v-model="isPDF" color="red" label="Edit Content or upload PDF?" value="red" hide-details></v-switch>
+        <p class="upload-prompt">{{ isPDF ? "Upload PDF file" : "Add the content here" }}</p>
+        <div class="content-container">
           <v-file-input
               v-if="isPDF"
               accept="application/pdf"
               label="PDF File"
-              class="min-h-[4rem]"
+              class="pdf-input"
               v-model="pdfFile"
               @change="handlePDFUpload"
           ></v-file-input>
-
           <v-textarea
               v-if="!isPDF"
               v-model="content"
               variant="outlined"
               label="Content"
               floating-label
-
               required
           ></v-textarea>
         </div>
-
-        <v-btn @click="submit" height="48" variant="tonal" class="form-btn">Submit</v-btn>
+        <v-btn @click="submit" class="form-btn">Submit</v-btn>
       </v-form>
     </v-container>
   </div>
-  <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="flex justify-start">
+  <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
-    <button @click="snackbar = false" class="ml-auto text-white">X</button>
+    <button @click="snackbar = false" class="snackbar-close-btn">X</button>
   </v-snackbar>
 </template>
 
 <style scoped>
+.add-book-container {
+  width: 100%;
+  max-width: 70%;
+  min-height: 55vh;
+  background-color: white;
+  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  margin-top: 4rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #4B5563;
+  border-bottom: 3px solid var(--secondary-color-light);
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+}
+
+.upload-title {
+  color: #64748B;
+}
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 2px solid #E2E8F0;
+  margin: 1rem 0;
+  padding: 0.5rem 0;
+}
+
+.file-input {
+  max-width: 18rem;
+}
+
+.cover-image {
+  margin-left: 0.5rem;
+  height: 8rem;
+  width: 8rem;
+  border: 2px solid #E2E8F0;
+}
+
+.image {
+  height: 100%;
+  width: 100%;
+}
+
+.upload-prompt {
+  font-size: 1.25rem;
+}
+
+.content-container {
+  min-height: 12rem;
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.pdf-input {
+  min-height: 4rem;
+}
+
 .form-btn {
   height: 4rem;
   width: 10rem;
@@ -257,5 +298,15 @@ const form = ref(null);
   font-weight: 700;
   font-size: 1.2rem;
   margin: 0 auto;
+}
+
+.custom-snackbar {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.snackbar-close-btn {
+  margin-left: auto;
+  color: white;
 }
 </style>

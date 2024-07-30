@@ -50,6 +50,11 @@ const router = createRouter({
       component: () => import('../views/AddAuthor.vue')
     },
     {
+      path: '/requests',
+      name: 'requests',
+      component: () => import('../views/RequestsView.vue')
+    },
+    {
       path: '/unauthorized',
       name: 'unauthorized',
       component: () => import('../views/UnauthorizedView.vue')

@@ -69,11 +69,11 @@ function toggleShowPassword() {
 </script>
 
 <template>
-  <div class="flex w-[50%] mt-8 border rounded-[5px] card-root ">
+  <div class="card-root">
     <div class="card-action-area">
       <div class="title-text-box">Sign Up</div>
       <v-container>
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" class="form">
           <v-text-field
               class="input-text"
               v-model="username"
@@ -112,8 +112,8 @@ function toggleShowPassword() {
         <router-link to="/login">Sign in with an account</router-link>
       </div>
     </div>
-    <div class="overflow-hidden items-center justify-center w-50 bg-white p-4 hidden md:flex">
-      <img src="../assets/images/library.png" alt="library photo" class="h-[100%] object-contain filter sepia-[30%] hover:sepia-[50%] transition-all duration-100">
+    <div class="image-container">
+      <img src="../assets/images/library.png" alt="library photo" class="image">
     </div>
   </div>
 
@@ -123,16 +123,15 @@ function toggleShowPassword() {
   </v-snackbar>
 </template>
 
-
 <style scoped>
-.custom-snackbar {
+.card-root {
   display: flex;
-  justify-content: flex-start;
+  width: 50%;
+  margin-top: 2rem;
+  border: 1px solid;
+  border-radius: 5px;
+  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
 }
-.card-root{
-  box-shadow: 10px 10px 30px rgba(0, 0, 0, .5);
-}
-
 
 .card-action-area {
   width: 28rem;
@@ -148,10 +147,10 @@ function toggleShowPassword() {
   font-size: 1.5rem;
   font-weight: 500;
   color: #545454;
-  padding: 0 .3rem;
+  padding: 0 0.3rem;
   border-bottom: solid;
   border-color: var(--secondary-color-light);
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 
 .form {
@@ -192,14 +191,13 @@ function toggleShowPassword() {
 .or-box {
   font-size: 1.3rem;
   width: 70%;
-  height: .1rem;
+  height: 0.1rem;
   background-color: var(--secondary-color-light);
-  margin: 1rem 0 1rem 0;
+  margin: 1rem 0;
 }
 
 .create-account-box {
   font-size: 1.2rem;
-
 }
 
 .create-account-box a,
@@ -207,8 +205,38 @@ function toggleShowPassword() {
 .create-account-box a:visited {
   text-decoration: none;
   color: deeppink;
-  padding: .3rem .7rem;
+  padding: 0.3rem 0.7rem;
 }
 
+.image-container {
+  display: none;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  background-color: white;
+  padding: 1rem;
+}
 
+.image {
+  height: 100%;
+  object-fit: contain;
+  filter: sepia(30%);
+  transition: filter 0.1s ease-in-out;
+}
+
+.image:hover {
+  filter: sepia(50%);
+}
+
+@media (min-width: 768px) {
+  .image-container {
+    display: flex;
+  }
+}
+
+.custom-snackbar {
+  display: flex;
+  justify-content: flex-start;
+}
 </style>

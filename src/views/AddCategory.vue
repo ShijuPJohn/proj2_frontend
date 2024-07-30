@@ -148,18 +148,6 @@ async function onSubmit() {
   font-size: 1.2rem;
 }
 
-.or-box {
-  font-size: 1.3rem;
-  width: 70%;
-  height: .1rem;
-  background-color: var(--secondary-color-light);
-  margin: 2rem 0 1rem 0;
-}
-
-.create-account-box {
-  font-size: 1.2rem;
-
-}
 
 .create-account-box a,
 .create-account-box a:link,
