@@ -59,6 +59,11 @@ const router = createRouter({
       name: 'unauthorized',
       component: () => import('../views/UnauthorizedView.vue')
     },
+    {
+      path: '/issued-books',
+      name: 'issued_books',
+      component: () => import('../views/IssuedBooksView.vue')
+    },
 
   ]
 })

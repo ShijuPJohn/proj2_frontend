@@ -40,6 +40,7 @@ watch(
     </div>
     <div v-if="role==='user'" class="actions-box">
       <h1>User's Dashboard</h1>
+      <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>
     </div>
 
   </main>
