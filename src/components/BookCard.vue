@@ -15,9 +15,9 @@ const props = defineProps({
     required: true
   }
 })
-onMounted(() => {
-  console.log(props.book.requested)
-})
+// onMounted(() => {
+//   console.log("book from props", props.book.issued)
+// })
 
 async function raiseRequest(bookId) {
   const headers = {
@@ -26,7 +26,6 @@ async function raiseRequest(bookId) {
   };
   try {
     const response = await axios.post(`http://localhost:5000/api/book-request/${bookId}`, {}, {headers});
-    console.log(response)
     if (response.status === 201) {
       snackbarMessage.value = "Book Requested"
       props.book.requested = true;
@@ -48,7 +47,6 @@ async function deleteRequest(bookId) {
   };
   try {
     const response = await axios.delete(`http://localhost:5000/api/book-request/${bookId}`, {headers});
-    console.log(response)
     if (response.status === 200) {
       snackbarMessage.value = "Book Request deleted"
       props.book.requested = false;
@@ -71,12 +69,17 @@ async function deleteRequest(bookId) {
     </div>
     <h3 class="book-title">{{ book.title }}</h3>
     <h4 v-for="author in book.authors" class="book-author">{{ author.name }}</h4>
-    <v-btn v-if="!book.requested" variant="flat" color="blue" @click="()=>{raiseRequest(book.id)}">
+    <v-btn v-if="book.issued" variant="flat" color="green" @click="()=>{raiseRequest(book.id)}">
+      <!--      <v-icon icon="mdi-book"></v-icon>-->
+      Read
+    </v-btn>
+    <v-btn v-else-if="!book.requested" variant="flat" color="blue" @click="()=>{raiseRequest(book.id)}">
       <v-icon icon="mdi-plus"></v-icon>
     </v-btn>
     <v-btn v-else variant="flat" color="red" @click="()=>{deleteRequest(book.id)}">
       <v-icon icon="mdi-delete"></v-icon>
     </v-btn>
+
   </div>
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}

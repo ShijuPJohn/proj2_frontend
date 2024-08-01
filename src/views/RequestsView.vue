@@ -38,7 +38,7 @@ watch(isLoggedIn, (newVal) => {
   }
 })
 
-async function onDelete(rid) {
+  async function onDelete(rid) {
 
   try {
     const response = await axios.delete(`http://localhost:5000/api/request_librarian/${rid}`, {headers});
@@ -95,10 +95,10 @@ async function onApprove(rid, uid, bid) {
           class="mr-2 text-[.6rem] text-slate-500">requested by: </span>{{ request.user.username }}
       </div>
       <div class="request-card-btn-container flex gap-1">
-        <v-btn flat color="green" @click="()=>{onApprove(request.id,request.user.id,request.book.id)}">
+        <v-btn flat color="green" @click="onApprove(request.id,request.user.id,request.book.id)">
           <v-icon icon="mdi-check"/>
         </v-btn>
-        <v-btn flat color="red" @click="()=>{onDelete(request.id)}">
+        <v-btn flat color="red" @click="onDelete(request.id)">
           <v-icon icon="mdi-close"/>
         </v-btn>
       </div>
