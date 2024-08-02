@@ -17,10 +17,8 @@ onMounted(async () => {
   try {
     const response = await axios.get('http://localhost:5000/api/books', {headers});
     if (response.status === 200) {
-      console.log(response.data)
       const requestedBookArray = response.data.requests.map(reqObject => reqObject.book_id)
       const issuedBookArray = response.data.issues.map(issueObject => issueObject.book_id)
-      console.log(issuedBookArray)
       listOfBooks.value = response.data.ebooks.map(ebook => {
         return {...ebook, requested:requestedBookArray.includes(ebook.id), issued:issuedBookArray.includes(ebook.id)};
       })

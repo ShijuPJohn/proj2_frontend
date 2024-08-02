@@ -85,7 +85,7 @@ async function handlePDFUpload(event) {
         'Authorization': `Bearer ${token.value}`
       }
     });
-    pdfFilePath.value = response.data.filePath;
+    pdfFilePath.value = response.data.filename;
     snackbarMessage.value = "PDF uploaded successfully";
     snackbarColor.value = 'success';
     snackbar.value = true;

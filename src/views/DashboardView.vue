@@ -30,7 +30,6 @@ watch(
 </script>
 
 <template>
-  <h1>User's Dashboard</h1>
   <main>
     <div v-if="role==='librarian'" class="actions-box">
       <router-link to="/add-category" class="create-category-btn action-btn">Create a new category</router-link>
@@ -39,7 +38,6 @@ watch(
       <router-link to="/requests" class="create-book action-btn">Book Requests</router-link>
     </div>
     <div v-if="role==='user'" class="actions-box">
-      <h1>User's Dashboard</h1>
       <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>
     </div>
 
