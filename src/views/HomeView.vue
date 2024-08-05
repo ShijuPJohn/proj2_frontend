@@ -1,9 +1,10 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useAuthStore} from "@/stores/authStore.js";
 import {storeToRefs} from "pinia";
 import axios from "axios";
 import BookCard from "@/components/BookCard.vue";
+import router from "@/router/index.js";
 
 const authStore = useAuthStore();
 const {loading, role, error, isLoggedIn, token} = storeToRefs(authStore);
@@ -27,6 +28,16 @@ onMounted(async () => {
     console.error('Error:', error.response ? error.response.data : error.message);
   }
 })
+watch(
+    () => authStore.$state,
+    (newState) => {
+      if (!newState.user || !newState.token) {
+        // Redirect to login page if the store is cleared
+        router.push('/login');
+      }
+    },
+    {deep: true}
+);
 </script>
 
 

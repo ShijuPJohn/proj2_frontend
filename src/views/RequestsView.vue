@@ -4,7 +4,7 @@ import router from "@/router/index.js";
 import {useAuthStore} from "@/stores/authStore.js";
 import {storeToRefs} from "pinia";
 import axios from "axios";
-import {da} from "vuetify/locale";
+import BookStrips from "@/components/BookStrips.vue";
 
 const snackbar = ref(false);
 const snackbarMessage = ref('');
@@ -38,7 +38,7 @@ watch(isLoggedIn, (newVal) => {
   }
 })
 
-  async function onDelete(rid) {
+async function onDelete(rid) {
 
   try {
     const response = await axios.delete(`http://localhost:5000/api/request_librarian/${rid}`, {headers});
@@ -73,37 +73,32 @@ async function onApprove(rid, uid, bid) {
       snackbar.value = true
     }
   } catch (error) {
-      console.error('Error:', error.response ? error.response.data : error.message);
-      snackbarMessage.value = `Failed. ${error.response ? error.response.data.message : error.message}`;
-      snackbarColor.value = 'error'
-      snackbar.value = true
+    console.error('Error:', error.response ? error.response.data : error.message);
+    snackbarMessage.value = `Failed. ${error.response ? error.response.data.message : error.message}`;
+    snackbarColor.value = 'error'
+    snackbar.value = true
   }
 }
 </script>
 
 <template>
   <div class="request-card-container w-[95%] md:w-[70%]">
-    <div v-for="request in requests"
-         class="request-card flex justify-between items-center p-4 m-2 bg-slate-900 bg-opacity-15 border-[1px] border-slate-500">
-      <div class=" w-[40%] flex flex-col">
-        <p class="font-bold text-[1.2rem]">{{ request.book.title }}</p>
-        <p class="font-bold text-[1.2rem]"><span class="text-[.7rem] mr-2 text-slate-500"
-                                                 v-for="author in request.book.authors">{{ author.name }}</span></p>
-
-      </div>
-      <div class="flex justify-center items-center"><span
-          class="mr-2 text-[.6rem] text-slate-500">requested by: </span>{{ request.user.username }}
-      </div>
-      <div class="request-card-btn-container flex gap-1">
-        <v-btn flat color="green" @click="onApprove(request.id,request.user.id,request.book.id)">
-          <v-icon icon="mdi-check"/>
-        </v-btn>
-        <v-btn flat color="red" @click="onDelete(request.id)">
-          <v-icon icon="mdi-close"/>
-        </v-btn>
-      </div>
-    </div>
+    <BookStrips v-for="request in requests" :request="request" :on-approve="onApprove" :on-delete="onDelete"/>
   </div>
+
+  <v-dialog v-model="dialog" max-width="400">
+    <v-card>
+      <v-card-title class="headline">Confirm Return</v-card-title>
+      <v-card-subtitle>Are you sure you want to return this book?</v-card-subtitle>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green" @click="returnBook">Yes</v-btn>
+        <v-btn color="red" @click="dialog = false">No</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
     <button @click="snackbar = false" class="snackbar-close-btn">X</button>

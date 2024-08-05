@@ -16,6 +16,16 @@ const headers = {
   'Content-Type': 'application/json',
   'Authorization': `Bearer ${token.value}`
 };
+watch(
+    () => authStore.$state,
+    (newState) => {
+      if (!newState.user || !newState.token) {
+        // Redirect to login page if the store is cleared
+        router.push('/login');
+      }
+    },
+    {deep: true}
+);
 onMounted(async () => {
   try {
     const response = await axios.get('http://localhost:5000/api/user-issues', {headers});
@@ -28,12 +38,6 @@ onMounted(async () => {
     snackbarMessage.value = `Failed. ${error.response ? error.response.data.message : error.message}`;
     snackbarColor.value = 'error'
     snackbar.value = true
-  }
-})
-watch(isLoggedIn, (newVal) => {
-  console.log("isLoggedIn", newVal)
-  if (!isLoggedIn.value || !isLoggedIn) {
-    router.push('/')
   }
 })
 watch(issuedBooks, (newVal) => {
@@ -50,7 +54,6 @@ function removeBook(bid) {
   <div class="book-container">
     <BookCard v-for="(book, index) in issuedBooks" :key="index" :book="book" :remove-book-callback="removeBook"/>
   </div>
-  <h1 v-for="(book, index) in issuedBooks">{{ book.returned }}</h1>
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
     <button @click="snackbar = false" class="snackbar-close-btn">X</button>

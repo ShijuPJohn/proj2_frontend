@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import axios from "axios";
 import {storeToRefs} from "pinia";
 import {useAuthStore} from "@/stores/authStore.js";
@@ -16,6 +16,16 @@ const bookId = route.params.id;
 const authStore = useAuthStore();
 const {loading, role, error, isLoggedIn, token} = storeToRefs(authStore);
 const book = ref({})
+watch(
+    () => authStore.$state,
+    (newState) => {
+      if (!newState.user || !newState.token) {
+        // Redirect to login page if the store is cleared
+        router.push('/login');
+      }
+    },
+    {deep: true}
+);
 onMounted(async () => {
   const headers = {
     'Content-Type': 'application/json',
@@ -107,10 +117,10 @@ async function returnBook() {
 <template>
   <div class="book-details-main-container flex flex-col border-slate-500 w-[100%] md:w-[60%] mt-4">
     <div class="book-details-title-image-container flex gap-2" v-if="Object.keys(book).length > 0">
-      <div class="book-details-image-container h-[20rem]">
+      <div class="book-details-image-container h-[20rem] p-2 border-slate-500 border-[1px] m-2">
         <img :src="book.cover_image" alt="book cover image" class="h-full w-full">
       </div>
-      <div class="book-details-title-text flex flex-col">
+      <div class="book-details-title-text flex flex-col justify-space-between py-4">
         <h1 class="text-[2rem] font-semibold">{{ book.title }}</h1>
         <h3>
           <span v-if="book.authors.length>1">Authors: </span>
@@ -144,7 +154,10 @@ async function returnBook() {
       </div>
 
     </div>
-    <p>{{ book.description }}</p>
+    <div class="description-box mx-2">
+      <h2 class="my-4 text-2xl uppercase font-weight-medium">Description:</h2>
+      <p>{{ book.description }}</p>
+    </div>
   </div>
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}

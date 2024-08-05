@@ -4,6 +4,7 @@ import {onMounted, ref, watch} from "vue";
 import {useAuthStore} from "@/stores/authStore.js";
 import {storeToRefs} from "pinia";
 import axios from "axios";
+import router from "@/router/index.js";
 
 const snackbar = ref(false);
 const snackbarMessage = ref('');
@@ -25,7 +26,16 @@ watch(bookFile, (newBookFile) => {
     bookFileUrl.value = '';
   }
 });
-
+watch(
+    () => authStore.$state,
+    (newState) => {
+      if (!newState.user || !newState.token) {
+        // Redirect to login page if the store is cleared
+        router.push('/login');
+      }
+    },
+    {deep: true}
+);
 async function fetchBook(bookId) {
   const headers = {
     'Content-Type': 'application/json',

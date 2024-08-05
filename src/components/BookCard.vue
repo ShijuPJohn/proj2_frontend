@@ -105,7 +105,9 @@ async function returnBook() {
     </router-link>
     <router-link :to="'/book-details/' + book.id + '/' + book.title"><h3 class="book-title">{{ book.title }}</h3>
     </router-link>
-    <h4 v-for="author in book.authors" class="book-author">{{ author.name }}</h4>
+    <div class="author-names">
+      <h4 v-for="author in book.authors" class="book-author">{{ author.name }}</h4>
+    </div>
     <v-btn v-if="role==='librarian'" variant="flat" color="green"
            @click="()=>{router.push(`/read-book/${book.id}/${book.title}`)}">
       Read
@@ -153,7 +155,6 @@ async function returnBook() {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 0.25rem;
   align-items: center;
   border: 1px solid #64748b;
   background-color: rgba(30, 41, 59, 0.05);
@@ -163,8 +164,8 @@ async function returnBook() {
 }
 
 .book-image {
-  width: 90%;
-  height: 70%;
+
+  height: 55%;
 }
 
 .image {
