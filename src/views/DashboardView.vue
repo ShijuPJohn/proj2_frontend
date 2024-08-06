@@ -32,10 +32,11 @@ watch(
 <template>
   <main>
     <div v-if="role==='librarian'" class="actions-box">
-      <router-link to="/add-category" class="create-category-btn action-btn">Create a new category</router-link>
-      <router-link to="/add-author" class="create-category-btn action-btn">Create a new author</router-link>
       <router-link to="/add-book" class="create-book action-btn">Create a new book</router-link>
       <router-link to="/requests" class="create-book action-btn">Book Requests</router-link>
+      <router-link to="/books" class="create-book action-btn">Books</router-link>
+      <router-link to="/authors" class="create-book action-btn">Authors</router-link>
+      <router-link to="/sections" class="create-book action-btn">Sections</router-link>
     </div>
     <div v-if="role==='user'" class="actions-box">
       <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>

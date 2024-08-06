@@ -22,7 +22,7 @@ onMounted(() => {
 watch(isLoggedIn, (newVal) => {
   console.log("isLoggedIn", newVal)
   if (!isLoggedIn.value || !isLoggedIn) {
-    router.push('/')
+    router.push('/login')
   }
 })
 async function onSubmit() {
