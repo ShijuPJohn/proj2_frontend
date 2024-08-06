@@ -17,12 +17,15 @@ onMounted(async () => {
   };
   try {
     const response = await axios.get('http://localhost:5000/api/books', {headers});
-    if (response.status === 200) {
+    console.log(response)
+    if (role.value!=="librarian"){
       const requestedBookArray = response.data.requests.map(reqObject => reqObject.book_id)
       const issuedBookArray = response.data.issues.map(issueObject => issueObject.book_id)
       listOfBooks.value = response.data.ebooks.map(ebook => {
-        return {...ebook, requested:requestedBookArray.includes(ebook.id), issued:issuedBookArray.includes(ebook.id)};
+        return {...ebook, requested: requestedBookArray.includes(ebook.id), issued: issuedBookArray.includes(ebook.id)};
       })
+    } else{
+      listOfBooks.value=response.data.ebooks;
     }
   } catch (error) {
     console.error('Error:', error.response ? error.response.data : error.message);

@@ -1,7 +1,7 @@
 <script setup>
 import {useAuthStore} from "@/stores/authStore.js";
 import {storeToRefs} from "pinia";
-import {onMounted, ref, watch} from "vue";
+import {defineProps, onMounted, ref, watch} from "vue";
 import router from "@/router/index.js";
 import axios from "axios";
 
@@ -25,6 +25,14 @@ const title = ref('');
 const year = ref('');
 const description = ref('');
 const content = ref('');
+const props = defineProps({
+  closeCallback: {
+    type: Function,
+  },
+  submitCallback: {
+    type: Function,
+  }
+})
 const headers = {
   'Content-Type': 'application/json',
   'Authorization': `Bearer ${token.value}`
@@ -34,22 +42,13 @@ onMounted(async () => {
   if (!authStore.$state || role.value !== "librarian") {
     router.push('/unauthorized')
   }
-  const sectonsRes = await axios.get('http://localhost:5000/api/sections', {headers});
-  sections.value = sectonsRes.data.sections;
+  const sectionsRes = await axios.get('http://localhost:5000/api/sections', {headers});
+  sections.value = sectionsRes.data.sections;
   const authorsRes = await axios.get('http://localhost:5000/api/authors', {headers});
   authors.value = authorsRes.data.authors;
   localStateLoading.value = false;
 });
 
-watch(isLoggedIn, (newVal) => {
-  console.log("isLoggedIn", newVal)
-  if (!isLoggedIn.value || !isLoggedIn) {
-    router.push('/')
-  }
-});
-watch(selectedAuthors, (newVal) => {
-  console.log("selectedAuthors", newVal)
-})
 
 async function handleCoverImageUpload(event) {
   event.preventDefault();
@@ -96,38 +95,16 @@ async function handlePDFUpload(event) {
     snackbar.value = true;
   }
 }
-async function onSubmit() {
-  const data = {
-    title: title.value,
-    publication_year: year.value,
-    description: description.value,
-    sections: sections.value.filter(section=>selectedSections.value.includes(section.name)).map(section=>section.id),
-    authors: authors.value.filter(author=>selectedAuthors.value.includes(author.name)).map(author=>author.id),
-    filename: pdfFilePath.value,
-    content: isPDF.value ? '' : content.value,
-    cover_image: coverImageUrl.value,
-  };
-  try {
-    const response = await axios.post('http://localhost:5000/api/books', data, {headers});
-    if (response.status === 201) {
-      snackbarMessage.value = "Book added successfully";
-      snackbarColor.value = 'success';
-      snackbar.value = true;
-      // Reset form fields if necessary
-    } else {
-      throw new Error(response.statusText);
-    }
-  } catch (error) {
-    console.error('Error:', error.response ? error.response.data : error.message);
-    snackbarMessage.value = "Failed to add book. Please try again.";
-    snackbarColor.value = 'error';
-    snackbar.value = true;
-  }
+
+function onSubmit() {
+  const nSections = sections.value.filter(section => selectedSections.value.includes(section.name)).map(section => section.id)
+  const nAuthors = authors.value.filter(author => selectedAuthors.value.includes(author.name)).map(author => author.id)
+  const filename = pdfFilePath.value
+  const nContent = isPDF.value ? '' : content.value
+  const cover_image = coverImageUrl.value
+  props.submitCallback(title.value, year.value, description.value, nSections, nAuthors, filename, nContent, cover_image)
 }
 
-watch(coverImageUrl, (newVal) => {
-  console.log("cover image newval", newVal)
-})
 
 const submit = () => {
   if (form.value.validate()) {
@@ -140,16 +117,37 @@ const form = ref(null);
 
 <template>
   <div class="add-book-container">
-    <div class="title">Add a new book</div>
     <v-container>
       <v-form ref="form" v-model="valid" class="form">
-        <v-text-field v-model="title" variant="outlined" label="Title" floating-label required></v-text-field>
-        <v-text-field v-model="year" variant="outlined" label="Year" floating-label required></v-text-field>
-        <v-textarea v-model="description" variant="outlined" label="Description" floating-label required></v-textarea>
+        <v-text-field
+            v-model="title"
+            :rules="[v => !!v || 'Title is required', v=>v.length>3 || 'Title should be at least 3 characters']"
+            variant="outlined"
+            label="Title"
+            floating-label
+            required>
+
+        </v-text-field>
+        <v-text-field
+            v-model="year"
+            :rules="[v => !!v || 'Published year is required', v=>v.length===4 || 'Enter in the format YYYY']"
+            variant="outlined"
+            label="Year"
+            floating-label
+            required>
+        </v-text-field>
+        <v-textarea
+            v-model="description"
+            variant="outlined"
+            label="Description"
+            floating-label
+            required>
+        </v-textarea>
         <v-autocomplete
             label="Sections"
             variant="outlined"
             v-model="selectedSections"
+            :rules="[v=>v.length>=1 || 'Select at least one section']"
             multiple
             chips
             clearable
@@ -158,6 +156,7 @@ const form = ref(null);
         <v-autocomplete
             label="Authors"
             variant="outlined"
+            :rules="[v=>v.length>=1 || 'Select at least one author']"
             multiple
             chips
             clearable
@@ -197,7 +196,10 @@ const form = ref(null);
               required
           ></v-textarea>
         </div>
-        <v-btn @click="submit" class="form-btn">Submit</v-btn>
+        <div class="form-action-btn-container w-full flex gap-2 justify-center">
+          <v-btn @click="submit" class="form-btn">Submit</v-btn>
+          <v-btn @click="closeCallback" color="red" class="form-btn">Cancel</v-btn>
+        </div>
       </v-form>
     </v-container>
   </div>
@@ -210,16 +212,12 @@ const form = ref(null);
 <style scoped>
 .add-book-container {
   width: 100%;
-  max-width: 70%;
   min-height: 55vh;
   background-color: white;
-  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  margin-top: 4rem;
 }
 
 .title {
@@ -286,7 +284,7 @@ const form = ref(null);
 }
 
 .form-btn {
-  height: 4rem;
+  height: 3rem;
   width: 10rem;
   text-transform: uppercase;
   background: var(--primary-color-light);
@@ -296,8 +294,7 @@ const form = ref(null);
   color: #ffffff;
   cursor: pointer;
   font-weight: 700;
-  font-size: 1.2rem;
-  margin: 0 auto;
+  font-size: 1rem;
 }
 
 .custom-snackbar {
