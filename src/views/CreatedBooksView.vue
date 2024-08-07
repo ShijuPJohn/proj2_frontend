@@ -17,7 +17,7 @@ const deleteBookDialogMessage = ref("");
 const valid = ref(false);
 const sectionName = ref('');
 const sectionDescription = ref('');
-let mode = "edit";
+const mode = ref("edit");
 
 
 const authStore = useAuthStore();
@@ -60,17 +60,15 @@ function closeCreateDialog() {
   editBookDialog.value = false;
 }
 
-//
-// function openEditDialog(section) {
-//   currentSectionId.value = section.id;
-//   sectionName.value = section.name;
-//   sectionDescription.value = section.description;
-//   mode = "edit"
-//   editSectionDialog.value = true;
-// }
-//
+
+function openEditDialog(bid) {
+  mode.value = "edit"
+  currentBookId.value = bid;
+  editBookDialog.value = true;
+}
+
 function openCreateDialog() {
-  mode = "create"
+  mode.value = "create"
   editBookDialog.value = true;
 }
 
@@ -92,41 +90,35 @@ async function deleteBook() {
   deleteConfirmDialog.value = false;
 }
 
-//
-// async function editSection() {
-//   const data = {
-//     name: sectionName.value,
-//     description: sectionDescription.value
-//   };
-//   try {
-//     const response = await axios.put(`http://localhost:5000/api/sections/${currentSectionId.value}`, data, {headers})
-//     console.log("response", response)
-//     const targetSectionId = books.value.findIndex(section => section.id === currentSectionId.value);
-//     if (targetSectionId !== -1) {
-//       books.value[targetSectionId].name = response.data.section.name;
-//       books.value[targetSectionId].description = response.data.section.description;
-//     }
-//     snackbarMessage.value = "Section Edited";
-//     snackbarColor.value = 'success';
-//     snackbar.value = true;
-//     sectionName.value = "";
-//     sectionDescription.value = "";
-//
-//   } catch (error) {
-//     snackbarMessage.value = "Failed. Please try again.";
-//     snackbarColor.value = 'error';
-//     snackbar.value = true;
-//   }
-//   editSectionDialog.value = false;
-// }
-//
+
+async function editBook(bid, title, publication_year, description, sections, authors, filename, content, cover_image) {
+  const data = {title, publication_year, description, sections, authors, filename, content, cover_image}
+  try {
+    const response = await axios.put(`http://localhost:5000/api/books/${bid}`, data, {headers});
+    console.log(response.data)
+    const rIndex = books.value.findIndex(book => book.id === bid)
+    books.value[rIndex] = response.data.ebook;
+    snackbarMessage.value = "Book added successfully";
+    snackbarColor.value = 'success';
+    snackbar.value = true;
+    editBookDialog.value = false;
+    // Reset form fields if necessary
+
+  } catch (error) {
+    console.error('Error:', error.response ? error.response.data : error.message);
+    snackbarMessage.value = "Failed to add book. Please try again.";
+    snackbarColor.value = 'error';
+    snackbar.value = true;
+  }
+}
+
 
 async function createBook(title, publication_year, description, sections, authors, filename, content, cover_image) {
   const data = {title, publication_year, description, sections, authors, filename, content, cover_image}
   try {
     const response = await axios.post('http://localhost:5000/api/books', data, {headers});
     console.log(response)
-    editBookDialog.value=false;
+    editBookDialog.value = false;
     books.value = [...books.value, response.data.ebook]
     snackbarMessage.value = "Book added successfully";
     snackbarColor.value = 'success';
@@ -161,7 +153,7 @@ async function createBook(title, publication_year, description, sections, author
         <!--        <p class="section-description text-[.6rem] text-slate-500">{{ book.description }}</p>-->
       </div>
       <div class="section-card-action-btns-container flex gap-4">
-        <v-btn flat color="#f59342" @click="openEditDialog(book)">
+        <v-btn flat color="#f59342" @click="openEditDialog(book.id)">
           <v-icon icon="mdi-pencil"/>
         </v-btn>
         <v-btn flat color="#bd3228" @click="openDeleteDialog(book.id)">
@@ -186,37 +178,16 @@ async function createBook(title, publication_year, description, sections, author
 
   <v-dialog v-model="editBookDialog" persistent max-width="700">
     <v-card>
-      <v-card-title class="headline">{{ mode === 'edit' ? 'Edit the Section' : 'Create a new Book' }}</v-card-title>
+      <v-card-title class="headline">{{ mode === 'edit' ? 'Edit the Book' : 'Create a new Book' }}</v-card-title>
       <v-container>
-        <AddBook :close-callback="closeCreateDialog" :submit-callback="createBook"/>
-        <!--        <v-form ref="form" v-model="valid" class="form">-->
-        <!--          <v-text-field-->
-        <!--              v-model="sectionName"-->
-        <!--              variant="outlined"-->
-        <!--              label="Section Name"-->
-        <!--              :rules="sectionNameRules"-->
-        <!--              floating-label-->
-        <!--              required>-->
-        <!--          </v-text-field>-->
-        <!--          <v-textarea-->
-        <!--              v-model="sectionDescription"-->
-        <!--              variant="outlined"-->
-        <!--              label="Section Description"-->
-        <!--              floating-label-->
-        <!--              required>-->
-        <!--          </v-textarea>-->
-        <!--        </v-form>-->
+        <AddBook :close-callback="closeCreateDialog" :submit-callback="createBook" :edit-callback="editBook" :book-id="currentBookId"
+                 :mode="mode"/>
       </v-container>
-      <!--      <v-card-actions>-->
-      <!--        <v-spacer></v-spacer>-->
-      <!--        <v-btn color="green" @click="mode==='create'?createSection():editSection()">Submit</v-btn>-->
-      <!--        <v-btn color="red" @click="editBookDialog = false">Dismiss</v-btn>-->
-      <!--      </v-card-actions>-->
     </v-card>
   </v-dialog>
 
   <button class="floating-action-button absolute
-  right-[1rem]
+  right-[2rem]
   top-[calc(100vh-5rem)]
    w-[4rem] h-[4rem]
     rounded-[10rem]

@@ -36,6 +36,9 @@ watch(
       <router-link to="/books" class="create-book action-btn">Books</router-link>
       <router-link to="/authors" class="create-book action-btn">Authors</router-link>
       <router-link to="/sections" class="create-book action-btn">Sections</router-link>
+      <router-link to="/users" class="create-book action-btn">Users</router-link>
+      <router-link to="/profile" class="create-book action-btn">Profile</router-link>
+      <router-link to="/stats" class="create-book action-btn">Stats</router-link>
     </div>
     <div v-if="role==='user'" class="actions-box">
       <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>

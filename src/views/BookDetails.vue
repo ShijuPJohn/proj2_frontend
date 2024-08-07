@@ -35,7 +35,7 @@ onMounted(async () => {
     const response = await axios.get(`http://localhost:5000/api/books/${bookId}`, {headers});
     if (response.status === 200) {
       console.log("response data",response.data)
-      book.value = response.data.ebook;
+      book.value = response.data.book;
       book.value.requested = response.data.requested
       book.value.issued = response.data.issued;
     }

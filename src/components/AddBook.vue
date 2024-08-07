@@ -25,12 +25,22 @@ const title = ref('');
 const year = ref('');
 const description = ref('');
 const content = ref('');
+const book = ref(null);
 const props = defineProps({
   closeCallback: {
     type: Function,
   },
   submitCallback: {
     type: Function,
+  },
+  editCallback: {
+    type: Function,
+  },
+  mode: {
+    type: String,
+  },
+  bookId: {
+    type: Number,
   }
 })
 const headers = {
@@ -47,6 +57,17 @@ onMounted(async () => {
   const authorsRes = await axios.get('http://localhost:5000/api/authors', {headers});
   authors.value = authorsRes.data.authors;
   localStateLoading.value = false;
+  if (props.mode === "edit") {
+    const response = await axios.get(`http://localhost:5000/api/books/${props.bookId}`, {headers});
+    title.value = response.data.book.title;
+    year.value = response.data.book.publication_year;
+    description.value = response.data.book.description;
+    selectedSections.value = response.data.book.sections.map(section => section.name);
+    selectedAuthors.value = response.data.book.authors.map(author => author.name);
+    coverImageUrl.value = response.data.book.cover_image;
+    pdfFilePath.value = response.data.book.filename;
+    coverImageUrl.value = response.data.book.cover_image;
+  }
 });
 
 
@@ -105,10 +126,23 @@ function onSubmit() {
   props.submitCallback(title.value, year.value, description.value, nSections, nAuthors, filename, nContent, cover_image)
 }
 
+function onEdit() {
+  const nSections = sections.value.filter(section => selectedSections.value.includes(section.name)).map(section => section.id)
+  const nAuthors = authors.value.filter(author => selectedAuthors.value.includes(author.name)).map(author => author.id)
+  const filename = pdfFilePath.value
+  const nContent = isPDF.value ? '' : content.value
+  const cover_image = coverImageUrl.value
+  props.editCallback(props.bookId, title.value, year.value, description.value, nSections, nAuthors, filename, nContent, cover_image)
+}
 
 const submit = () => {
   if (form.value.validate()) {
-    onSubmit();
+    if (props.mode === 'edit') {
+      onEdit();
+    } else {
+      onSubmit();
+    }
+
   }
 };
 
@@ -130,7 +164,7 @@ const form = ref(null);
         </v-text-field>
         <v-text-field
             v-model="year"
-            :rules="[v => !!v || 'Published year is required', v=>v.length===4 || 'Enter in the format YYYY']"
+            :rules="[v => !!v || 'Published year is required', v=>/^\d{4}$/.test(v) || 'Enter in the format YYYY']"
             variant="outlined"
             label="Year"
             floating-label

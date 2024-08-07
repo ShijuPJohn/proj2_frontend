@@ -80,6 +80,21 @@ const router = createRouter({
             component: () => import('../views/CreatedBooksView.vue')
         },
         {
+            path: '/users',
+            name: 'users',
+            component: () => import('../views/UsersView.vue')
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('../views/ProfileView.vue')
+        },
+        {
+            path: '/stats',
+            name: 'stats',
+            component: () => import('../views/StatsView.vue')
+        },
+        {
             path: '/read-book/:id/:title',
             name: 'read_book',
             component: () => import('../views/ReadBookView.vue')
