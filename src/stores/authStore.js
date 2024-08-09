@@ -9,6 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
     const error = ref(null);
     const token = ref('');
     const role = ref('');
+    const id = ref('');
 
     async function login(email, password) {
         loading.value = true;
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
             token.value = response.data.token
             const decoded = jwtDecode(response.data.token);
             role.value = decoded.user_role
+            id.value = decoded.user_id
         } catch (err) {
             error.value = err.response?.data?.message || err.message
             isLoggedIn.value = false
@@ -46,6 +48,8 @@ export const useAuthStore = defineStore('auth', () => {
             isLoggedIn.value = true
             token.value = response.data.token
             const decoded = jwtDecode(response.data.token);
+            role.value = decoded.user_role
+            id.value = decoded.user_id
         } catch (err) {
             error.value = err.response?.data?.message || err.message
             isLoggedIn.value = false
@@ -58,11 +62,12 @@ export const useAuthStore = defineStore('auth', () => {
         isLoggedIn.value = false
         token.value = ''
         role.value = ''
+        id.value = ''
     }
 
-    return {isLoggedIn, loading, token, error, role, login, logout, signup}
+    return {isLoggedIn, loading, token, error, role, id, login, logout, signup}
 }, {
     persist: {
-        paths: ['isLoggedIn', 'loading', 'error', 'token', "role"]
+        paths: ['isLoggedIn', 'loading', 'error', 'token', "role", "id"]
     }
 });

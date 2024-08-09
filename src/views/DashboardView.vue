@@ -47,23 +47,23 @@ function selectComponent(num) {
 </script>
 
 <template>
-  <div v-if="role==='librarian'" class="dashboard-root-container w-full h-full flex">
-    <div class="dashboard-side-panel h-[100vh] w-[10rem] flex flex-col">
+  <div  class="dashboard-root-container w-full h-full flex">
+    <div class="dashboard-side-panel h-[100vh] w-[10rem] flex flex-col sticky left-0 top-0">
       <button @click="selectComponent(0)" class="action-btn" :class="selectedPanel===0?'selected-action-btn':null">
         Profile
       </button>
-      <button @click="selectComponent(1)" class="action-btn" :class="selectedPanel===1?'selected-action-btn':null">
+      <button v-if="role==='librarian'" @click="selectComponent(1)" class="action-btn" :class="selectedPanel===1?'selected-action-btn':null">
         Authors
       </button>
-      <button @click="selectComponent(2)" class="action-btn" :class="selectedPanel===2?'selected-action-btn':null">
+      <button v-if="role==='librarian'" @click="selectComponent(2)" class="action-btn" :class="selectedPanel===2?'selected-action-btn':null">
         Sections
       </button>
-      <button @click="selectComponent(3)" class="action-btn" :class="selectedPanel===3?'selected-action-btn':null">Books
+      <button v-if="role==='librarian'" @click="selectComponent(3)" class="action-btn" :class="selectedPanel===3?'selected-action-btn':null">Books
       </button>
-      <button @click="selectComponent(4)" class="action-btn" :class="selectedPanel===4?'selected-action-btn':null">
+      <button  @click="selectComponent(4)" class="action-btn" :class="selectedPanel===4?'selected-action-btn':null">
         Requests
       </button>
-      <button @click="selectComponent(5)" class="action-btn" :class="selectedPanel===5?'selected-action-btn':null">Users
+      <button v-if="role==='librarian'" @click="selectComponent(5)" class="action-btn" :class="selectedPanel===5?'selected-action-btn':null">Users
       </button>
       <button @click="selectComponent(6)" class="action-btn" :class="selectedPanel===6?'selected-action-btn':null">Stats
       </button>
@@ -81,9 +81,9 @@ function selectComponent(num) {
       <IssuesView v-if="selectedPanel===7"/>
     </div>
   </div>
-  <div v-if="role==='user'" class="actions-box">
-    <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>
-  </div>
+<!--  <div v-if="role==='user'" class="actions-box">-->
+<!--    <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>-->
+<!--  </div>-->
 </template>
 
 <style scoped>

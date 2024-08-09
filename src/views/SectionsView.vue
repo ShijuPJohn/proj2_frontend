@@ -146,7 +146,7 @@ async function createSection() {
     <div
         class="section-card flex flex-row justify-space-between items-center border-slate-500 border-[1px] m-2 px-2 py-3 bg-slate-400 bg-opacity-40"
         v-for="section in sections" :key="section.id">
-      <div class="section-title-box  w-[20%] "><h3 class="text-sm">{{ section.id }}. {{ section.name }}</h3></div>
+      <div class="section-title-box  w-[45%] "><h3 class="text-sm font-weight-medium">{{ section.id }}. {{ section.name }}</h3></div>
       <div class="section-description-box w-[30%]">
         <p class="section-description text-[.6rem] text-slate-500">{{ section.description }}</p>
       </div>
@@ -204,8 +204,8 @@ async function createSection() {
     </v-card>
   </v-dialog>
 
-  <button class="floating-action-button absolute
-  right-[1rem]
+  <button class="floating-action-button sticky
+  left-[calc(100vw-6rem)]
   top-[calc(100vh-5rem)]
    w-[4rem] h-[4rem]
     rounded-[10rem]

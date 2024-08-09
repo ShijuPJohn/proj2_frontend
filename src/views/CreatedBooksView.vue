@@ -136,11 +136,11 @@ async function createBook(title, publication_year, description, sections, author
 </script>
 
 <template>
-  <div class="section-card-container w-[95%] md:w-[60%]">
+  <div class="section-card-container w-[95%] md:w-[65%]">
     <div
         class="section-card flex flex-row justify-space-between items-center border-slate-500 border-[1px] m-2 px-2 py-3 bg-slate-400 bg-opacity-40"
         v-for="book in books" :key="book.id">
-      <div class="book-strip-image-container h-[4rem]">
+      <div class="book-strip-image-container h-[4.5rem]">
         <img :src="book.cover_image" alt="cover image" class="w-full h-full">
       </div>
       <div class="section-title-box  w-[40%] flex flex-col">
@@ -186,8 +186,8 @@ async function createBook(title, publication_year, description, sections, author
     </v-card>
   </v-dialog>
 
-  <button class="floating-action-button absolute
-  right-[2rem]
+  <button class="floating-action-button sticky
+  left-[calc(100vw-6rem)]
   top-[calc(100vh-5rem)]
    w-[4rem] h-[4rem]
     rounded-[10rem]

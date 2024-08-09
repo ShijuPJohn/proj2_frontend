@@ -31,21 +31,21 @@ const props = defineProps({
 
 <template>
   <div
-      class="request-card flex justify-between items-center h-[5rem] p-[.1rem] m-2 bg-slate-900 bg-opacity-15 border-[1px] border-slate-500">
+      class="request-card flex justify-between items-center h-[4.5rem] p-[.1rem] m-2  bg-slate-900 bg-opacity-15 border-[1px] border-slate-500">
     <div class="book-image-container h-[100%]">
       <img :src="request.book.cover_image" alt="" class="h-full w-full object-contain">
     </div>
     <div class=" w-[40%] flex flex-col">
-      <p class="font-semibold text-[1.2rem]">{{ request.book.title }}</p>
+      <p class="font-medium text-[1.1rem]">{{ request.book.title }}</p>
       <p class="text-[1.2rem]"><span class="text-[.7rem] mr-2 text-slate-500"
-                                               v-for="author in request.book.authors">{{ author.name }}</span></p>
+                                     v-for="author in request.book.authors">{{ author.name }}</span></p>
 
     </div>
     <div class="flex justify-center items-center"><span
         class="mr-2 text-[.6rem] text-slate-500">requested by: </span>{{ request.user.username }}
     </div>
     <div class="request-card-btn-container flex gap-1">
-      <v-btn flat color="green" @click="onApprove(request.id,request.user.id,request.book.id)">
+      <v-btn v-if="role==='librarian'" flat color="green" @click="onApprove(request.id,request.user.id,request.book.id)">
         <v-icon icon="mdi-check"/>
       </v-btn>
       <v-btn flat color="red" @click="onDelete(request.id)">

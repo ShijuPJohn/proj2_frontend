@@ -195,8 +195,8 @@ async function createAuthor() {
   </v-dialog>
 
 
-  <button class="floating-action-button absolute
-  right-[1rem]
+  <button class="floating-action-button sticky
+  left-[calc(100vw-6rem)]
   top-[calc(100vh-5rem)]
    w-[4rem] h-[4rem]
     rounded-[10rem]
