@@ -132,36 +132,35 @@ async function createAuthor() {
 </script>
 
 <template>
-  <div class="author-card-container w-[95%] md:w-[50%]">
+  <div class="author-card-container">
     <div
-        class="author-card flex flex-row justify-space-between items-center border-slate-500 border-[1px] m-2 px-2 py-3 bg-slate-400 bg-opacity-40"
+        class="author-card"
         v-for="author in authors" :key="author.id">
-      <h3 class="text-sm">{{ author.id }}. {{ author.name }}</h3>
-      <div class="author-card-action-btns-container flex gap-4">
-        <v-btn flat color="#f59342" @click="openEditDialog(author)">
+      <h3>{{ author.id }}. {{ author.name }}</h3>
+      <div class="author-card-action-btns-container">
+        <v-btn class="btn" color="orange" flat @click="openEditDialog(author)">
           <v-icon icon="mdi-pencil"/>
         </v-btn>
-        <v-btn flat color="#bd3228" @click="openDeleteDialog(author.id)">
+        <v-btn class="btn" color="red" flat @click="openDeleteDialog(author.id)">
           <v-icon icon="mdi-delete"/>
         </v-btn>
       </div>
     </div>
   </div>
 
-  <v-dialog v-model="deleteConfirmDialog" max-width="400">
+  <v-dialog v-model="deleteConfirmDialog" class="dialog" max-width="400">
     <v-card>
       <v-card-title class="headline">Confirm Delete</v-card-title>
       <v-card-subtitle>{{ deleteAuthorDialogMessage }}</v-card-subtitle>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green" @click="deleteAuthor">Yes</v-btn>
-        <v-btn color="red" @click="deleteConfirmDialog = false">No</v-btn>
+        <v-btn class="btn" color="green" @click="deleteAuthor">Yes</v-btn>
+        <v-btn class="btn" color="red" @click="deleteConfirmDialog = false">No</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-
-  <v-dialog v-model="editAuthorDialog" max-width="700">
+  <v-dialog v-model="editAuthorDialog" class="dialog" max-width="700">
     <v-card>
       <v-card-title class="headline">{{ mode === "edit" ? "Edit Author" : "Create a new Author" }}</v-card-title>
       <v-container>
@@ -173,39 +172,28 @@ async function createAuthor() {
               :rules="authorNameRules"
               floating-label
               required>
-
           </v-text-field>
-        </v-form>
-      </v-container>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="green" @click="()=>{
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn type="submit" class="btn" color="green" @click="()=>{
           if(mode==='create'){
             createAuthor()
           } else {
             editAuthor()
           }
         }">Submit
-        </v-btn>
-        <v-btn color=" red
-        " @click="editAuthorDialog = false">Dismiss
-        </v-btn>
-      </v-card-actions>
+            </v-btn>
+            <v-btn class="btn" color="red" @click="editAuthorDialog = false">Dismiss
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-container>
     </v-card>
   </v-dialog>
 
-
-  <button class="floating-action-button sticky
-  left-[calc(100vw-6rem)]
-  top-[calc(100vh-5rem)]
-   w-[4rem] h-[4rem]
-    rounded-[10rem]
-     border-slate-500
-      border-[2px]
-      bg-blue-700" @click="openCreateDialog">
+  <button class="floating-action-button" @click="openCreateDialog">
     <v-icon color="white" icon="mdi-plus"/>
   </button>
-
 
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
@@ -214,6 +202,54 @@ async function createAuthor() {
 </template>
 
 <style scoped>
+.author-card-container {
+  width: 95%;
+  max-width: 50%;
+}
+
+.author-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #4b5563;
+  margin: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(107, 114, 128, 0.4);
+}
+
+.author-card h3 {
+  font-size: 0.875rem;
+}
+
+.author-card-action-btns-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+}
+
+
+.dialog {
+  max-width: 400px;
+}
+
+.floating-action-button {
+  position: fixed; /* Changed from sticky to fixed */
+  bottom: 2rem;    /* Distance from the bottom of the viewport */
+  right: 2rem;     /* Distance from the right of the viewport */
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 2px solid #4b5563;
+  background-color: #1d4ed8;
+  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+  z-index: 1000;   /* Ensure it's on top of other elements */
+}
+
 .custom-snackbar {
   display: flex;
   justify-content: flex-start;
@@ -222,9 +258,5 @@ async function createAuthor() {
 .snackbar-close-btn {
   margin-left: auto;
   color: white;
-}
-
-.floating-action-button {
-  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
 }
 </style>

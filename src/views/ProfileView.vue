@@ -143,22 +143,18 @@ async function changePassword() {
 </script>
 
 <template>
-  <div class="book-details-main-container flex flex-col border-slate-500 w-[100%] md:w-[60%] mt-4">
-    <div class="book-details-title-image-container flex gap-2" v-if="Object.keys(user).length > 0">
-      <div class="book-details-image-container h-[10rem] p-2 border-slate-500 border-[1px] m-2">
-        <img :src="'http://localhost:5000'+user.imageUrl" alt="book cover image" class="h-full w-full">
+  <div class="book-details-main-container">
+    <div class="book-details-title-image-container" v-if="Object.keys(user).length > 0">
+      <div class="book-details-image-container">
+        <img :src="'http://localhost:5000'+user.imageUrl" alt="book cover image" class="book-image">
       </div>
-      <div class="book-details-title-text flex flex-col justify-space-between py-4">
-        <p class="text-[1.3rem] font-medium"><span
-            class="text-md-body-1 text-slate-600">Name : </span>{{ user.username }}</p>
-        <p class="text-[1.2rem] font-medium"><span class="text-md-body-1 text-slate-600">Email : </span>{{ user.email }}
-        </p>
-        <p class="text-[1.1rem] font-medium"><span
-            class="text-md-body-1 text-slate-600 w-[20rem]">About : </span>{{ user.about }}
-        </p>
+      <div class="book-details-title-text">
+        <p class="text-username"><span class="label-text">Name : </span>{{ user.username }}</p>
+        <p class="text-email"><span class="label-text">Email : </span>{{ user.email }}</p>
+        <p class="text-about"><span class="label-text">About : </span>{{ user.about }}</p>
       </div>
     </div>
-    <div class="actions-box mx-2 flex flex-col gap-2 w-[30rem] my-4 ">
+    <div class="actions-box">
       <v-btn flat color="green" @click="initiateEdit">Edit Profile</v-btn>
       <v-btn flat color="red" @click="changePasswordDialog=true">Change Password</v-btn>
     </div>
@@ -180,7 +176,6 @@ async function changePassword() {
               label="Name"
               floating-label
               required>
-
           </v-text-field>
           <v-text-field
               v-model="email"
@@ -230,7 +225,6 @@ async function changePassword() {
               label="Current Password"
               floating-label
               required>
-
           </v-text-field>
           <v-text-field
               class="input-text"
@@ -242,8 +236,8 @@ async function changePassword() {
               variant="outlined"
               label="New Password"
               floating-label
-              required
-          ></v-text-field>
+              required>
+          </v-text-field>
         </v-form>
       </v-container>
       <v-card-actions>
@@ -256,6 +250,71 @@ async function changePassword() {
 </template>
 
 <style scoped>
+.book-details-main-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .book-details-main-container {
+    width: 60%;
+  }
+}
+
+.book-details-title-image-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.book-details-image-container {
+  height: 10rem;
+  padding: 0.5rem;
+  border: 1px solid #6b7280;
+  margin: 0.5rem;
+}
+
+.book-image {
+  height: 100%;
+  width: 100%;
+}
+
+.book-details-title-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.text-username {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.text-email {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.text-about {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.label-text {
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.actions-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 30rem;
+  margin: 1rem 0.5rem 0;
+}
+
 .custom-snackbar {
   display: flex;
   justify-content: flex-start;
@@ -266,4 +325,11 @@ async function changePassword() {
   margin-left: 0.5rem;
 }
 
+.form {
+  margin: 0;
+}
+
+.input-text {
+  margin-top: 1rem;
+}
 </style>

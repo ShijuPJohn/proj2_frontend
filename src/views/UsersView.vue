@@ -68,12 +68,10 @@ async function deleteUser() {
 </script>
 
 <template>
-  <div class="author-card-container w-[95%] md:w-[50%]">
-    <div
-        class="author-card flex flex-row justify-space-between items-center border-slate-500 border-[1px] m-2 px-2 py-3 bg-slate-400 bg-opacity-40"
-        v-for="user in users" :key="user.id">
-      <h3 class="text-sm">{{ user.id }}. {{ user.username }}</h3>
-      <div class="author-card-action-btns-container flex gap-4">
+  <div class="author-card-container">
+    <div class="author-card" v-for="user in users" :key="user.id">
+      <h3 class="author-name">{{ user.id }}. {{ user.username }}</h3>
+      <div class="author-card-action-btns-container">
         <v-btn flat color="#bd3228" @click="openDeleteDialog(user.id)">
           <v-icon icon="mdi-delete"/>
         </v-btn>
@@ -81,20 +79,17 @@ async function deleteUser() {
     </div>
   </div>
 
-  <v-dialog v-model="deleteConfirmDialog" max-width="400">
+  <v-dialog v-model="deleteConfirmDialog" class="dialog" max-width="400">
     <v-card>
-      <v-card-title class="headline">Confirm Delete</v-card-title>
-      <v-card-subtitle>{{ deleteUserDialogMessage }}</v-card-subtitle>
-      <v-card-actions>
+      <v-card-title class="dialog-title">Confirm Delete</v-card-title>
+      <v-card-subtitle class="dialog-subtitle">{{ deleteUserDialogMessage }}</v-card-subtitle>
+      <v-card-actions class="dialog-actions">
         <v-spacer></v-spacer>
         <v-btn color="green" @click="deleteUser">Yes</v-btn>
         <v-btn color="red" @click="deleteConfirmDialog = false">No</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
-
-
-
 
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
@@ -103,17 +98,55 @@ async function deleteUser() {
 </template>
 
 <style scoped>
+.author-card-container {
+  width: 95%;
+  max-width: 50%;
+}
+
+.author-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #64748b;
+  margin: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(156, 163, 175, 0.4);
+}
+
+.author-name {
+  font-size: 0.875rem;
+}
+
+.author-card-action-btns-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.dialog {
+  max-width: 400px;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+}
+
+.dialog-subtitle {
+  font-size: 1rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .custom-snackbar {
   display: flex;
   justify-content: flex-start;
 }
 
 .snackbar-close-btn {
-  margin-left: auto;
+  margin-left: 0.5rem;
   color: white;
-}
-
-.floating-action-button {
-  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
 }
 </style>

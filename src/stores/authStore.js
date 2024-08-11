@@ -23,6 +23,9 @@ export const useAuthStore = defineStore('auth', () => {
             })
             isLoggedIn.value = true
             token.value = response.data.token
+            if (localStorage.getItem("selectedPanel")) {
+                localStorage.setItem("selectedPanel", "0")
+            }
             const decoded = jwtDecode(response.data.token);
             role.value = decoded.user_role
             id.value = decoded.user_id
@@ -45,6 +48,9 @@ export const useAuthStore = defineStore('auth', () => {
             }), {
                 headers: {'Content-Type': 'application/json'}
             })
+            if (localStorage.getItem("selectedPanel")) {
+                localStorage.setItem("selectedPanel", "0")
+            }
             isLoggedIn.value = true
             token.value = response.data.token
             const decoded = jwtDecode(response.data.token);

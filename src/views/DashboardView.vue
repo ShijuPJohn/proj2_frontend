@@ -11,6 +11,7 @@ import UsersView from "@/views/UsersView.vue";
 import StatsView from "@/views/StatsView.vue";
 import CreatedBooksView from "@/views/CreatedBooksView.vue";
 import IssuesView from "@/views/IssuesView.vue";
+import PurchasesView from "@/views/PurchasesView.vue";
 
 const authStore = useAuthStore();
 const {logout} = authStore;
@@ -18,7 +19,7 @@ const {loading, error, role, isLoggedIn} = storeToRefs(authStore)
 const selectedPanel = ref(0);
 onMounted(() => {
   if (!authStore.$state) {
-    router.push('/')
+    router.push('/login')
   }
   if(localStorage.getItem("selectedPanel")){
     selectedPanel.value = parseInt(localStorage.getItem("selectedPanel"));
@@ -26,7 +27,7 @@ onMounted(() => {
 })
 watch(isLoggedIn, (newVal) => {
   if (!isLoggedIn.value || !isLoggedIn) {
-    router.push('/')
+    router.push('/login')
   }
 })
 watch(
@@ -46,9 +47,10 @@ function selectComponent(num) {
 }
 </script>
 
+
 <template>
-  <div  class="dashboard-root-container w-full h-full flex">
-    <div class="dashboard-side-panel h-[100vh] w-[10rem] flex flex-col sticky left-0 top-0">
+  <div class="dashboard-root-container">
+    <div class="dashboard-side-panel">
       <button @click="selectComponent(0)" class="action-btn" :class="selectedPanel===0?'selected-action-btn':null">
         Profile
       </button>
@@ -60,7 +62,7 @@ function selectComponent(num) {
       </button>
       <button v-if="role==='librarian'" @click="selectComponent(3)" class="action-btn" :class="selectedPanel===3?'selected-action-btn':null">Books
       </button>
-      <button  @click="selectComponent(4)" class="action-btn" :class="selectedPanel===4?'selected-action-btn':null">
+      <button @click="selectComponent(4)" class="action-btn" :class="selectedPanel===4?'selected-action-btn':null">
         Requests
       </button>
       <button v-if="role==='librarian'" @click="selectComponent(5)" class="action-btn" :class="selectedPanel===5?'selected-action-btn':null">Users
@@ -69,8 +71,10 @@ function selectComponent(num) {
       </button>
       <button @click="selectComponent(7)" class="action-btn" :class="selectedPanel===7?'selected-action-btn':null">Issues
       </button>
+      <button @click="selectComponent(8)" class="action-btn" :class="selectedPanel===8?'selected-action-btn':null">Purchases
+      </button>
     </div>
-    <div class="dashboard-main-panel flex-grow flex justify-center">
+    <div class="dashboard-main-panel">
       <ProfileView v-if="selectedPanel===0"/>
       <AuthorsView v-if="selectedPanel===1"/>
       <SectionsView v-if="selectedPanel===2"/>
@@ -79,33 +83,47 @@ function selectComponent(num) {
       <UsersView v-if="selectedPanel===5"/>
       <StatsView v-if="selectedPanel===6"/>
       <IssuesView v-if="selectedPanel===7"/>
+      <PurchasesView v-if="selectedPanel===8"/>
     </div>
+    <!-- <div v-if="role==='user'" class="actions-box">
+      <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>
+    </div> -->
   </div>
-<!--  <div v-if="role==='user'" class="actions-box">-->
-<!--    <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>-->
-<!--  </div>-->
 </template>
 
 <style scoped>
+.dashboard-root-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
 .dashboard-side-panel {
+  height: 100vh;
+  width: 10rem;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  left: 0;
   background-color: #3c5066;
 }
 
-.actions-box {
+.dashboard-main-panel {
+  flex-grow: 1;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
 }
 
 .action-btn {
   text-decoration: none;
   border: none;
-  border-bottom-style: solid;
-  border-width: 1px;
-  border-color: var(--grey-color-border1);
+  border-bottom: 1px solid var(--grey-color-border1);
   color: white;
-  font-size: .9rem;
+  font-size: 0.9rem;
   padding: 1rem;
   transition: background-color 0.2s;
+  background-color: transparent;
 }
 
 .selected-action-btn {
@@ -114,5 +132,10 @@ function selectComponent(num) {
 
 .action-btn:hover {
   background-color: #1e2832;
+}
+
+.actions-box {
+  display: flex;
+  flex-direction: column;
 }
 </style>

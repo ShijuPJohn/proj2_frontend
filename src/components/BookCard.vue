@@ -18,6 +18,9 @@ const props = defineProps({
   },
   removeBookCallback: {
     type: Function,
+  },
+  fetchBookFunction: {
+    type: Function,
   }
 })
 // onMounted(() => {
@@ -99,11 +102,10 @@ async function returnBook() {
 <template>
   <div class="book-card">
     <router-link :to="'/book-details/' + book.id + '/' + book.title" class="book-image">
-<!--    <div class="book-image">-->
       <img :src="book.cover_image" alt="book cover image" class="image">
-<!--    </div>-->
     </router-link>
-    <router-link :to="'/book-details/' + book.id + '/' + book.title"><h3 class="book-title">{{ book.title }}</h3>
+    <router-link :to="'/book-details/' + book.id + '/' + book.title">
+      <h3 class="book-title">{{ book.title }}</h3>
     </router-link>
     <div class="author-names">
       <h4 v-for="author in book.authors" class="book-author">{{ author.name }}</h4>
@@ -112,26 +114,41 @@ async function returnBook() {
            @click="()=>{router.push(`/read-book/${book.id}/${book.title}`)}">
       Read
     </v-btn>
-    <div v-else-if="book.issued" class="issued-book-actions flex gap-2 align-center ">
-      <v-btn variant="flat" color="green"
+    <div v-else-if="book.issued" class="issued-book-actions flex gap-1 align-center">
+      <v-btn variant="flat" color="green" width="10"
              @click="()=>{router.push(`/read-book/${book.id}/${book.title}`)}">
-        Read
+        <v-icon icon="mdi-book-open"/>
       </v-btn>
-      <v-btn variant="flat" color="red"
+      <v-btn variant="flat" color="red" width="5"
              @click="openReturnDialog">
-        Return
+        <v-icon icon="mdi-keyboard-return"/>
+      </v-btn>
+      <v-btn variant="flat" color="orange"
+             @click="fetchBookFunction(book.id)" v-if="book.purchased">
+        <v-icon icon="mdi-download"/>
       </v-btn>
     </div>
-    <v-btn v-else-if="!book.requested" variant="flat" color="blue" @click="()=>{raiseRequest(book.id)}">
-      <v-icon icon="mdi-plus"></v-icon>
-    </v-btn>
-    <v-btn v-else variant="flat" color="red" @click="()=>{deleteRequest(book.id)}">
-      <v-icon icon="mdi-delete"></v-icon>
-    </v-btn>
-
+    <div class="action-buttons" v-else-if="!book.requested">
+      <v-btn variant="flat" color="blue" @click="()=>{raiseRequest(book.id)}">
+        <v-icon icon="mdi-plus"></v-icon>
+      </v-btn>
+      <v-btn variant="flat" color="orange"
+             @click="fetchBookFunction(book.id)" v-if="book.purchased">
+        <v-icon icon="mdi-download"/>
+      </v-btn>
+    </div>
+    <div class="action-buttons" v-else-if="book.requested">
+      <v-btn variant="flat" color="red" @click="()=>{deleteRequest(book.id)}">
+        <v-icon icon="mdi-delete"></v-icon>
+      </v-btn>
+      <v-btn variant="flat" color="orange"
+             @click="fetchBookFunction(book.id)" v-if="book.purchased">
+        <v-icon icon="mdi-download"/>
+      </v-btn>
+    </div>
   </div>
 
-  <v-dialog v-model="dialog" max-width="400">
+  <v-dialog v-model="dialog" max-width="400" class="confirm-dialog">
     <v-card>
       <v-card-title class="headline">Confirm Return</v-card-title>
       <v-card-subtitle>Are you sure you want to return this book?</v-card-subtitle>
@@ -142,7 +159,6 @@ async function returnBook() {
       </v-card-actions>
     </v-card>
   </v-dialog>
-
 
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
@@ -159,12 +175,12 @@ async function returnBook() {
   border: 1px solid #64748b;
   background-color: rgba(30, 41, 59, 0.05);
   height: 22rem;
-  width: 13rem;
+  min-width: 13rem;
+  max-width: 14rem;
   padding: 0.5rem;
 }
 
 .book-image {
-
   height: 55%;
 }
 
@@ -181,6 +197,21 @@ async function returnBook() {
 .book-author {
   font-size: 0.7rem;
   color: #64748b;
+}
+
+.issued-book-actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.confirm-dialog {
+  max-width: 400px;
 }
 
 .custom-snackbar {

@@ -112,16 +112,16 @@ function initiateApproval(rid, uid, bid) {
 </script>
 
 <template>
-  <div class="request-card-container w-[95%] md:w-[70%]">
+  <div class="request-card-container">
     <BookStrips v-for="request in requests" :request="request" :on-approve="initiateApproval"
                 :on-delete="initiateDelete"/>
   </div>
 
-  <v-dialog v-model="dialog" max-width="400">
+  <v-dialog v-model="dialog" class="dialog" max-width="400">
     <v-card>
-      <v-card-title class="headline">{{dialogTitle}}</v-card-title>
-      <v-card-subtitle>{{dialogSubtitle}}</v-card-subtitle>
-      <v-card-actions>
+      <v-card-title class="dialog-title">{{dialogTitle}}</v-card-title>
+      <v-card-subtitle class="dialog-subtitle">{{dialogSubtitle}}</v-card-subtitle>
+      <v-card-actions class="dialog-actions">
         <v-spacer></v-spacer>
         <v-btn color="green" @click="()=>{
           if(mode==='delete'){
@@ -136,7 +136,6 @@ function initiateApproval(rid, uid, bid) {
     </v-card>
   </v-dialog>
 
-
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
     <button @click="snackbar = false" class="snackbar-close-btn">X</button>
@@ -144,7 +143,26 @@ function initiateApproval(rid, uid, bid) {
 </template>
 
 <style scoped>
-.request-card {
+.request-card-container {
+  width: 95%;
+  max-width: 70%;
+}
+
+.dialog {
+  max-width: 400px;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+}
+
+.dialog-subtitle {
+  font-size: 1rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .custom-snackbar {

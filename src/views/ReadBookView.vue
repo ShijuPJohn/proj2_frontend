@@ -24,6 +24,7 @@ const bookId = route.params.id;
 const bookTitle = route.params.title;
 const currentPage = ref(1);
 let totalPages = 0;
+const pageNumberFieldValue = ref(0);
 
 
 watch(bookFile, async (newBookFile) => {
@@ -31,12 +32,14 @@ watch(bookFile, async (newBookFile) => {
     bookFileUrl.value = URL.createObjectURL(newBookFile);
     const arrayBuffer = await newBookFile.arrayBuffer();
     const pdfDoc = await PDFDocument.load(arrayBuffer);
-
     totalPages = pdfDoc.getPageCount();
   } else {
     bookFileUrl.value = '';
   }
 });
+watch(currentPage, newVal => {
+  pageNumberFieldValue.value = newVal;
+})
 watch(
     () => authStore.$state,
     (newState) => {
@@ -53,6 +56,7 @@ function nextPage() {
     currentPage.value++;
   }
 }
+
 function previousPage() {
   if (currentPage.value !== 1) {
     currentPage.value--;
@@ -83,21 +87,20 @@ onMounted(async () => {
 
 <template>
   <div class="book-container">
-    <div class="page-controls-strip h-10 w-[1000px] bg-slate-700 sticky top-0 z-10 flex justify-center gap-4">
-      <button @click="previousPage" class="text-white">
+    <div class="page-controls-strip"
+         @keydown.left="previousPage" @keydown.right="nextPage">
+      <button @click="previousPage" class="control-button">
         <v-icon icon="mdi-arrow-left"/>
       </button>
-      <button @click="nextPage" class="text-white">
+      <button @click="nextPage" class="control-button">
         <v-icon icon="mdi-arrow-right"/>
       </button>
-      <form class="form" >
-        <input type="number" class="text-white">
-        <input type="submit">
-      </form>
+      <input type="number" class="page-number-input" v-model="pageNumberFieldValue"
+             @keydown.enter="currentPage=pageNumberFieldValue"/>
     </div>
 
-    <div class=" scroll-container h-[calc(100vh-4rem)]">
-      <VuePdfEmbed :page="currentPage" width="1000" annotation-layer text-layer :source="bookFileUrl"/>
+    <div class="scroll-container">
+      <VuePdfEmbed :page="currentPage" width="1000" annotation-layer text-layer :source="bookFileUrl"  />
     </div>
   </div>
 
@@ -108,9 +111,34 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.page-controls-strip {
+  height: 2.5rem;
+  width: 1000px;
+  background-color: #374151;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+}
 
+.control-button {
+  color: white;
+}
+
+.page-number-input {
+  color: white;
+  width: 4rem;
+  border: 2px solid #64748b;
+  border-radius: 0.25rem;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
 
 .scroll-container {
+  height: calc(100vh - 4rem);
   overflow: hidden;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -120,7 +148,30 @@ onMounted(async () => {
 .scroll-container::-webkit-scrollbar {
   display: none;
 }
+
 .hiddenCanvasElement {
   position: absolute;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.custom-snackbar {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 1000;
+}
+
+.snackbar-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
 }
 </style>

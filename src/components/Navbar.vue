@@ -1,7 +1,6 @@
 <script setup>
-import { storeToRefs } from 'pinia';
-import { useAuthStore } from '@/stores/authStore.js';
-import { onMounted } from 'vue';
+import {storeToRefs} from 'pinia';
+import {useAuthStore} from '@/stores/authStore.js';
 
 const authStore = useAuthStore();
 const { logout } = authStore;
@@ -9,34 +8,92 @@ const { loading,role, error, isLoggedIn, token } = storeToRefs(authStore);
 </script>
 
 <template>
-  <header class="flex items-center justify-between w-full h-20 bg-gray-700 px-4">
-    <router-link to="/" class="flex items-center text-white text-4xl">
-      <img src="./../assets/images/books.png" alt="logo" class="h-8 mr-2 mt-1">
+  <header class="header-container">
+    <router-link to="/" class="logo-container">
+      <img src="./../assets/images/books.png" alt="logo" class="logo-image">
       E-Library
     </router-link>
-    <ul class="flex items-center text-white">
-      <li class="header-list-item">
-        <router-link to="/" class="text-lg text-cyan-400">Home</router-link>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <router-link to="/" class="nav-link nav-link-home">Home</router-link>
       </li>
-      <li v-if="isLoggedIn" class="header-list-item">
+      <li v-if="isLoggedIn" class="nav-item">
         <router-link to="/dashboard">Dashboard</router-link>
       </li>
-      <li class="header-list-item">
+      <li class="nav-item">
         <router-link to="/contact">Contact</router-link>
       </li>
-      <li class="header-list-item">
+      <li class="nav-item">
         <router-link to="/about">About</router-link>
       </li>
-      <li v-if="!isLoggedIn" class="header-list-item">
-        <router-link to="/login" class="text-lg text-cyan-400">Login</router-link>
+      <li v-if="!isLoggedIn" class="nav-item">
+        <router-link to="/login" class="nav-link nav-link-login">Login</router-link>
       </li>
-      <li v-else @click="logout" class="header-list-item cursor-pointer">Log Out</li>
+      <li v-else @click="logout" class="nav-item nav-item-logout">Log Out</li>
     </ul>
   </header>
 </template>
 
 <style scoped>
-.header-list-item {
-  @apply text-lg text-cyan-400 mx-8 my-4 py-2 border-b-2 border-transparent transition duration-500 hover:border-secondary-color-light;
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 80px;
+  background-color: #374151;
+  padding: 0 16px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 2.25rem;
+}
+
+.logo-image {
+  height: 32px;
+  margin-right: 8px;
+  margin-top: 4px;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.nav-item {
+  margin: 16px 32px;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent ;
+
+  transition: border-color 0.5s;
+}
+
+.nav-link {
+  color: #00bcd4;
+  font-size: 1.125rem;
+  text-decoration: none;
+}
+
+.nav-link-home {
+  /* Additional styles for the home link */
+}
+
+.nav-link-login {
+  /* Additional styles for the login link */
+}
+
+.nav-item-logout {
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  border-bottom-color: var(--secondary-color-light);
+}
+li{
+  list-style: none;
 }
 </style>

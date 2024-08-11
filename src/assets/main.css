@@ -11,6 +11,11 @@
 .hiddenCanvasElement{
     visibility: hidden;
 }
+a, a:visited, a:active{
+    text-decoration: none;
+    color: inherit;
+    list-style: none;
+}
 /*#app {*/
 /*  !*max-width: 1280px;*!*/
 /*  margin: 0 auto;*/

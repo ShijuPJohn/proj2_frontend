@@ -17,7 +17,6 @@
     "pdfjs-dist": "^4.5.136",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
-    "tailwind": "^4.0.0",
     "vue": "^3.4.29",
     "vue-pdf-embed": "^2.1.0",
     "vue-router": "^4.3.3",
@@ -27,9 +26,6 @@
     "@mdi/font": "^7.4.47",
     "@types/pdfjs-dist": "^2.10.378",
     "@vitejs/plugin-vue": "^5.0.5",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.6",
     "vite": "^5.3.1"
   }
 }

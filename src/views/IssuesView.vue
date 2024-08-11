@@ -62,7 +62,7 @@ async function onDelete() {
     snackbarColor.value = 'error';
     snackbar.value = true;
   } finally {
-    dialog.value=false;
+    dialog.value = false;
   }
 }
 
@@ -73,28 +73,27 @@ function deleteDialog(issueId) {
 </script>
 
 <template>
-  <div class="request-card-container w-[95%] md:w-[70%]">
+  <div class="request-card-container">
     <div v-for="issue in issues"
-         class="issue-card flex justify-between items-center h-[5rem] p-[.3rem] m-2 bg-slate-900 bg-opacity-15 border-[1px] border-slate-500">
-      <div class="book-image-container h-[100%]">
-        <img :src="issue.book.cover_image" alt="" class="h-full w-full object-contain">
+         class="issue-card">
+      <div class="book-image-container">
+        <img :src="issue.book.cover_image" alt="" class="book-image">
       </div>
-      <div class=" w-[35%] flex flex-col">
-        <p class="font-weight-medium text-[1.2rem]">{{ issue.book.title }}</p>
-        <p class="text-[1.2rem]"><span class="text-[.7rem] mr-2 text-slate-500"
-                                       v-for="author in issue.book.authors">{{ author.name }}</span></p>
+      <router-link :to="`/book-details/${issue.book.id}/${issue.book.title}`" tag="div" class="book-info">
 
-      </div>
-      <div class="flex justify-center items-center"><span
-          class="mr-2 text-[.6rem] text-slate-500">allotted to: </span>{{ issue.user.username }}
-      </div>
-      <div class="flex justify-center items-center"><span
-          class="mr-2 text-[.9rem] text-slate-500">Issued: </span>{{
-          issue.days !== 0 ? issue.days + ' days ago' : 'Today'
-        }}
-      </div>
-      <div class="request-card-btn-container flex gap-1">
+        <p class="book-title">{{ issue.book.title }}</p>
+        <p class="book-authors">
+          <span class="author-name" v-for="author in issue.book.authors">
+            {{ author.name }}
+          </span>
+        </p>
 
+      </router-link>
+      <div class="user-info"><span class="label">allotted to: </span>{{ issue.user.username }}
+      </div>
+      <div class="issued-info"><span class="label">Issued: </span>{{ issue.days !== 0 ? issue.days + ' days ago' : 'Today' }}
+      </div>
+      <div class="request-card-btn-container">
         <v-btn flat color="red" @click="deleteDialog(issue.id)">
           <v-icon icon="mdi-close"/>
         </v-btn>
@@ -114,7 +113,6 @@ function deleteDialog(issueId) {
     </v-card>
   </v-dialog>
 
-
   <v-snackbar v-if="snackbar" v-model="snackbar" :color="snackbarColor" :timeout="3000" class="custom-snackbar">
     {{ snackbarMessage }}
     <button @click="snackbar = false" class="snackbar-close-btn">X</button>
@@ -122,7 +120,73 @@ function deleteDialog(issueId) {
 </template>
 
 <style scoped>
-.request-card {
+.request-card-container {
+  width: 95%;
+}
+
+@media (min-width: 768px) {
+  .request-card-container {
+    width: 70%;
+  }
+}
+
+.issue-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5rem;
+  padding: 0.3rem;
+  margin: 0.5rem;
+  background-color: rgba(31, 41, 55, 0.15);
+  border: 1px solid #6b7280;
+}
+
+.book-image-container {
+  height: 100%;
+}
+
+.book-image {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.book-info {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-title {
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.book-authors {
+  font-size: 1.2rem;
+}
+
+.author-name {
+  font-size: 0.7rem;
+  margin-right: 0.5rem;
+  color: #6b7280;
+}
+
+.user-info,
+.issued-info {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.request-card-btn-container {
+  display: flex;
+  gap: 0.25rem;
 }
 
 .custom-snackbar {

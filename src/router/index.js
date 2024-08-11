@@ -35,21 +35,6 @@ const router = createRouter({
             component: () => import('../views/DashboardView.vue')
         },
         {
-            path: '/add-book',
-            name: 'add_book',
-            component: () => import('../components/AddBook.vue')
-        },
-        {
-            path: '/add-category',
-            name: 'add_category',
-            component: () => import('../views/AddCategory.vue')
-        },
-        {
-            path: '/add-author',
-            name: 'add_author',
-            component: () => import('../views/AddAuthor.vue')
-        },
-        {
             path: '/requests',
             name: 'requests',
             component: () => import('../views/RequestsView.vue')
@@ -58,11 +43,6 @@ const router = createRouter({
             path: '/unauthorized',
             name: 'unauthorized',
             component: () => import('../views/UnauthorizedView.vue')
-        },
-        {
-            path: '/issued-books',
-            name: 'issued_books',
-            component: () => import('../views/IssuedBooksView.vue')
         },
         {
             path: '/authors',
@@ -103,6 +83,16 @@ const router = createRouter({
             path: '/book-details/:id/:title',
             name: 'book_details',
             component: () => import('../views/BookDetails.vue')
+        },
+        {
+            path: '/buy-book/:id',
+            name: 'buy_book',
+            component: () => import('../views/BuyBookView.vue')
+        },
+        {
+            path: '/purchases',
+            name: 'purchases',
+            component: () => import('../views/PurchasesView.vue')
         },
 
     ]
