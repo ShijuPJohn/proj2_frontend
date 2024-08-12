@@ -112,7 +112,7 @@ onMounted(async () => {
 
 <style scoped>
 .page-controls-strip {
-  height: 2.5rem;
+  height: 3rem;
   width: 1000px;
   background-color: #374151;
   position: sticky;
@@ -122,6 +122,7 @@ onMounted(async () => {
   justify-content: center;
   gap: 1rem;
   align-items: center;
+  margin-top: .5rem;
 }
 
 .control-button {

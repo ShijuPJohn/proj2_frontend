@@ -12,6 +12,7 @@ import StatsView from "@/views/StatsView.vue";
 import CreatedBooksView from "@/views/CreatedBooksView.vue";
 import IssuesView from "@/views/IssuesView.vue";
 import PurchasesView from "@/views/PurchasesView.vue";
+import GenerateReportView from "@/views/GenerateReportView.vue";
 
 const authStore = useAuthStore();
 const {logout} = authStore;
@@ -21,7 +22,7 @@ onMounted(() => {
   if (!authStore.$state) {
     router.push('/login')
   }
-  if(localStorage.getItem("selectedPanel")){
+  if (localStorage.getItem("selectedPanel")) {
     selectedPanel.value = parseInt(localStorage.getItem("selectedPanel"));
   }
 })
@@ -54,24 +55,34 @@ function selectComponent(num) {
       <button @click="selectComponent(0)" class="action-btn" :class="selectedPanel===0?'selected-action-btn':null">
         Profile
       </button>
-      <button v-if="role==='librarian'" @click="selectComponent(1)" class="action-btn" :class="selectedPanel===1?'selected-action-btn':null">
+      <button v-if="role==='librarian'" @click="selectComponent(1)" class="action-btn"
+              :class="selectedPanel===1?'selected-action-btn':null">
         Authors
       </button>
-      <button v-if="role==='librarian'" @click="selectComponent(2)" class="action-btn" :class="selectedPanel===2?'selected-action-btn':null">
+      <button v-if="role==='librarian'" @click="selectComponent(2)" class="action-btn"
+              :class="selectedPanel===2?'selected-action-btn':null">
         Sections
       </button>
-      <button v-if="role==='librarian'" @click="selectComponent(3)" class="action-btn" :class="selectedPanel===3?'selected-action-btn':null">Books
+      <button v-if="role==='librarian'" @click="selectComponent(3)" class="action-btn"
+              :class="selectedPanel===3?'selected-action-btn':null">Books
       </button>
       <button @click="selectComponent(4)" class="action-btn" :class="selectedPanel===4?'selected-action-btn':null">
         Requests
       </button>
-      <button v-if="role==='librarian'" @click="selectComponent(5)" class="action-btn" :class="selectedPanel===5?'selected-action-btn':null">Users
+      <button v-if="role==='librarian'" @click="selectComponent(5)" class="action-btn"
+              :class="selectedPanel===5?'selected-action-btn':null">Users
       </button>
-      <button @click="selectComponent(6)" class="action-btn" :class="selectedPanel===6?'selected-action-btn':null">Stats
+      <button @click="selectComponent(6)" class="action-btn" :class="selectedPanel===6?'selected-action-btn':null">
+        Stats
       </button>
-      <button @click="selectComponent(7)" class="action-btn" :class="selectedPanel===7?'selected-action-btn':null">Issues
+      <button @click="selectComponent(7)" class="action-btn" :class="selectedPanel===7?'selected-action-btn':null">
+        Issues
       </button>
-      <button @click="selectComponent(8)" class="action-btn" :class="selectedPanel===8?'selected-action-btn':null">Purchases
+      <button @click="selectComponent(8)" class="action-btn" :class="selectedPanel===8?'selected-action-btn':null">
+        Purchases
+      </button>
+      <button v-if="role==='librarian'" @click="selectComponent(9)" class="action-btn" :class="selectedPanel===9?'selected-action-btn':null">
+        Reports
       </button>
     </div>
     <div class="dashboard-main-panel">
@@ -84,6 +95,7 @@ function selectComponent(num) {
       <StatsView v-if="selectedPanel===6"/>
       <IssuesView v-if="selectedPanel===7"/>
       <PurchasesView v-if="selectedPanel===8"/>
+      <GenerateReportView v-if="selectedPanel===9"/>
     </div>
     <!-- <div v-if="role==='user'" class="actions-box">
       <router-link to="/issued-books" class="create-book action-btn">Issued Books</router-link>

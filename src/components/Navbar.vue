@@ -3,8 +3,8 @@ import {storeToRefs} from 'pinia';
 import {useAuthStore} from '@/stores/authStore.js';
 
 const authStore = useAuthStore();
-const { logout } = authStore;
-const { loading,role, error, isLoggedIn, token } = storeToRefs(authStore);
+const {logout} = authStore;
+const {loading, role, error, isLoggedIn, token} = storeToRefs(authStore);
 </script>
 
 <template>
@@ -15,7 +15,7 @@ const { loading,role, error, isLoggedIn, token } = storeToRefs(authStore);
     </router-link>
     <ul class="nav-list">
       <li class="nav-item">
-        <router-link to="/" class="nav-link nav-link-home">Home</router-link>
+        <router-link to="/">Home</router-link>
       </li>
       <li v-if="isLoggedIn" class="nav-item">
         <router-link to="/dashboard">Dashboard</router-link>
@@ -67,8 +67,9 @@ const { loading,role, error, isLoggedIn, token } = storeToRefs(authStore);
 .nav-item {
   margin: 16px 32px;
   padding: 8px 0;
-  border-bottom: 2px solid transparent ;
-
+  border-bottom: 2px solid transparent;
+  font-size: .95rem;
+  text-transform: uppercase;
   transition: border-color 0.5s;
 }
 
@@ -93,7 +94,8 @@ const { loading,role, error, isLoggedIn, token } = storeToRefs(authStore);
 .nav-item:hover {
   border-bottom-color: var(--secondary-color-light);
 }
-li{
+
+li {
   list-style: none;
 }
 </style>
